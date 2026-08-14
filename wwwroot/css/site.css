@@ -29,3 +29,95 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:250px;
+
+    height:100vh;
+
+    background:#0B2A4A;
+
+    color:white;
+
+    padding:25px;
+
+}
+
+.sidebar a{
+
+    display:block;
+
+    color:white;
+
+    text-decoration:none;
+
+    margin:15px 0;
+
+    font-size:17px;
+
+}
+
+.sidebar a:hover{
+
+    opacity:.7;
+
+}
+
+.logo{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.kanban-board {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+.kanban-column {
+    min-width: 280px;
+    width: 280px;
+    background: #f5f6f8;
+    border-radius: 10px;
+    padding: 12px;
+    min-height: 500px;
+}
+
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.project-card {
+    cursor: grab;
+}
+
+.project-card:active {
+    cursor: grabbing;
+}
+
+.project-card.dragging {
+    opacity: 0.5;
+}
+
+.kanban-column {
+    transition: background-color 0.2s;
+}
+
+.kanban-column:has(.dragging) {
+    background-color: #e9ecef;
+}

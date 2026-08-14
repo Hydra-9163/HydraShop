@@ -1,0 +1,48 @@
+@model IEnumerable<MachineShopManager.Models.Project>
+
+@{
+    ViewData["Title"] = "Projetos";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Projetos</h2>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Novo Projeto
+        </a>
+    </div>
+
+    <table class="table table-striped table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Código</th>
+                <th>Projeto</th>
+                <th>Aluno</th>
+                <th>Serviço</th>
+                <th>Status</th>
+                <th>Entrega</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        @foreach(var project in Model)
+        {
+            <tr>
+                <td>@project.Code</td>
+                <td>@project.ProjectName</td>
+                <td>@project.StudentName</td>
+                <td>@project.ServiceType</td>
+                <td>@project.Status</td>
+                <td>@project.DesiredDelivery.ToShortDateString()</td>
+            </tr>
+        }
+
+        </tbody>
+
+    </table>
+
+</div>

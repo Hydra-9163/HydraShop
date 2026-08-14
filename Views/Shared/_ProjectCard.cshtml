@@ -1,0 +1,44 @@
+@model MachineShopManager.Models.Project
+
+<a asp-controller="Project"
+   asp-action="Details"
+   asp-route-id="@Model.Id"
+   style="text-decoration: none; color: inherit;">
+
+    <div class="card shadow-sm mb-3 project-card"
+         draggable="true"
+         data-project-id="@Model.Id">
+
+        <div class="card-body">
+
+            <h6 class="fw-bold">
+                @Model.Code
+            </h6>
+
+            <strong>
+                @Model.ProjectName
+            </strong>
+
+            <hr />
+
+            <small>
+                👤 @Model.StudentName
+            </small>
+
+            <br />
+
+            <small>
+                ⚙ @Model.ServiceType
+            </small>
+
+            <br />
+
+            <small class="text-secondary">
+                📅 @Model.DesiredDelivery.ToShortDateString()
+            </small>
+
+        </div>
+
+    </div>
+
+</a>

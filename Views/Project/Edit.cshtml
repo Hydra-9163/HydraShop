@@ -1,0 +1,119 @@
+@model MachineShopManager.Models.Project
+@using MachineShopManager.Enums
+
+@{
+    ViewData["Title"] = "Editar Projeto";
+}
+
+<div class="container mt-4">
+
+    <h2>Editar Projeto</h2>
+
+    <hr />
+
+    <form asp-action="Edit" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="card mb-4">
+            <div class="card-header">
+                Informações do Aluno
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label asp-for="StudentName" class="form-label"></label>
+                    <input asp-for="StudentName" class="form-control" />
+                    <span asp-validation-for="StudentName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="StudentEmail" class="form-label"></label>
+                    <input asp-for="StudentEmail" class="form-control" />
+                    <span asp-validation-for="StudentEmail"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                Informações do Projeto
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label asp-for="Code" class="form-label"></label>
+                    <input asp-for="Code" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ProjectName" class="form-label"></label>
+                    <input asp-for="ProjectName" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ServiceType" class="form-label"></label>
+
+                    <select asp-for="ServiceType"
+                            asp-items="Html.GetEnumSelectList<ServiceType>()"
+                            class="form-select">
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Status" class="form-label"></label>
+
+                    <select asp-for="Status"
+                            asp-items="Html.GetEnumSelectList<ProjectStatus>()"
+                            class="form-select">
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DesiredDelivery" class="form-label"></label>
+
+                    <input asp-for="DesiredDelivery"
+                           type="date"
+                           class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label"></label>
+
+                    <textarea asp-for="Notes"
+                              class="form-control"
+                              rows="4"></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Salvar Alterações
+        </button>
+
+        <a asp-action="Details"
+           asp-route-id="@Model.Id"
+           class="btn btn-secondary">
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

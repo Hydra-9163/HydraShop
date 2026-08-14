@@ -1,0 +1,241 @@
+@model MachineShopManager.ViewModels.OperatorDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>Machine Shop</h1>
+            <p class="text-secondary mb-0">
+                Gerenciamento de projetos
+            </p>
+        </div>
+
+        <a asp-controller="Project"
+           asp-action="Create"
+           class="btn btn-primary">
+
+            + Novo Projeto
+
+        </a>
+
+    </div>
+
+
+    <div class="kanban-board">
+
+
+        <!-- RECEBIDOS -->
+
+        <div class="kanban-column"
+            data-status="Recebido">
+
+            <div class="kanban-header">
+
+                <span>Recebidos</span>
+
+                <span class="badge bg-secondary">
+                    @Model.Recebidos.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.Recebidos)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- EM ANÁLISE -->
+
+        <div class="kanban-column"
+            data-status="EmAnalise">
+
+            <div class="kanban-header">
+
+                <span>Em análise</span>
+
+                <span class="badge bg-warning">
+                    @Model.EmAnalise.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.EmAnalise)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- EM FILA -->
+
+        <div class="kanban-column"
+            data-status="EmFila">
+
+            <div class="kanban-header">
+
+                <span>Em fila</span>
+
+                <span class="badge bg-info">
+                    @Model.EmFila.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.EmFila)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- AGUARDANDO MATERIAL -->
+
+        <div class="kanban-column"
+            data-status="AguardandoMaterial">
+
+            <div class="kanban-header">
+
+                <span>Aguardando material</span>
+
+                <span class="badge bg-warning">
+                    @Model.AguardandoMaterial.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.AguardandoMaterial)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- PRODUÇÃO -->
+
+        <div class="kanban-column"
+            data-status="EmProducao">
+
+            <div class="kanban-header">
+
+                <span>Em produção</span>
+
+                <span class="badge bg-primary">
+                    @Model.EmProducao.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.EmProducao)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- PAUSADOS -->
+
+        <div class="kanban-column"
+            data-status="Pausado">
+
+            <div class="kanban-header">
+
+                <span>Pausados</span>
+
+                <span class="badge bg-danger">
+                    @Model.Pausados.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.Pausados)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- PRONTOS -->
+
+        <div class="kanban-column"
+            data-status="ProntoParaEntrega">
+
+            <div class="kanban-header">
+
+                <span>Pronto para entrega</span>
+
+                <span class="badge bg-success">
+                    @Model.Prontos.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.Prontos)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- ENTREGUES -->
+
+        <div class="kanban-column"
+            data-status="Entregue">
+
+            <div class="kanban-header">
+
+                <span>Entregues</span>
+
+                <span class="badge bg-success">
+                    @Model.Entregues.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.Entregues)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+        <!-- CANCELADOS -->
+
+        <div class="kanban-column"
+            data-status="Cancelado">
+
+            <div class="kanban-header">
+
+                <span>Cancelados</span>
+
+                <span class="badge bg-danger">
+                    @Model.Cancelados.Count
+                </span>
+
+            </div>
+
+            @foreach (var project in Model.Cancelados)
+            {
+                <partial name="_ProjectCard" model="project" />
+            }
+
+        </div>
+
+
+    </div>
+
+</div>
