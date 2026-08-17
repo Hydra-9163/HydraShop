@@ -77,3 +77,111 @@
     @Model.Notes
 
 </div>
+
+<hr />
+
+<h5>Relatório Fotográfico</h5>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<form asp-controller="Project"
+      asp-action="UploadPhoto"
+      method="post"
+      enctype="multipart/form-data"
+      class="mb-4">
+
+    <input type="hidden"
+           name="projectId"
+           value="@Model.Id" />
+
+    <div class="mb-3">
+
+        <label class="form-label">
+            Adicionar foto ao relatório
+        </label>
+
+        <input type="file"
+               name="photo"
+               class="form-control"
+               accept=".jpg,.jpeg,.png"
+               required />
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+
+        📷 Adicionar Foto
+
+    </button>
+
+</form>
+
+
+@if (Model.Photos != null && Model.Photos.Any())
+{
+    <div class="row g-3">
+
+        @foreach (var photo in Model.Photos)
+        {
+            <div class="col-md-4">
+
+                <div class="card shadow-sm">
+
+                    <img src="@photo.FilePath"
+                         class="card-img-top"
+                         alt="@photo.FileName"
+                         style="height: 220px; object-fit: cover;" />
+
+                    <div class="card-body">
+
+                        <small class="text-muted d-block mb-2">
+                            @photo.UploadedAt
+                                .ToLocalTime()
+                                .ToString("dd/MM/yyyy HH:mm")
+                        </small>
+
+                        <form asp-controller="Project"
+                              asp-action="DeletePhoto"
+                              method="post">
+                              onsubmit="return confirm('Tem certeza que deseja remover esta foto?');">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@photo.Id" />
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger">
+
+                                🗑 Remover Foto
+
+                            </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">
+        Nenhuma foto foi adicionada ao relatório ainda.
+    </div>
+}

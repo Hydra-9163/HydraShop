@@ -1,7 +1,206 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Acesso";
 }
 
-<div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
-    <h1>Machine Shop Manager</h1>
+<div class="login-page">
+
+    <!-- LADO ESQUERDO -->
+
+    <div class="login-info">
+
+        <img src="~/images/sesi-logo.png"
+             class="sesi-logo"
+             alt="SESI">
+
+        <div class="project-logos">
+
+            <img src="~/images/hydra-logo.png"
+                 class="hydra-logo"
+                 alt="HYDRA FRC">
+
+            <img src="~/images/mostra-logo.png"
+                 class="mostra-logo"
+                 alt="MOSTRA STEAM SESI">
+
+        </div>
+
+        <p class="login-description">
+            Plataforma de apoio ao ensino para estudantes
+            cientistas do SESI.
+        </p>
+
+    </div>
+
+
+    <!-- LADO DIREITO -->
+
+    <div class="access-card">
+
+        <!-- ABAS -->
+
+        <div class="access-tabs">
+
+            <button type="button"
+                    class="access-tab active"
+                    id="studentTab">
+
+                Acesso do estudante
+
+            </button>
+
+            <button type="button"
+                    class="access-tab"
+                    id="operatorTab">
+
+                Modo operador
+
+            </button>
+
+        </div>
+
+
+        <!-- CONTEÚDO ESTUDANTE -->
+
+        <div class="access-content"
+             id="studentContent">
+
+            <h1>Acesse a plataforma</h1>
+
+            <h2>Consulte seu projeto</h2>
+
+            <p>
+                Informe o código fornecido pela oficina.
+            </p>
+
+
+            <form asp-controller="Student"
+                  asp-action="Project"
+                  method="get">
+
+                <div class="access-field">
+
+                    <label for="studentCode">
+                        Código do projeto
+                    </label>
+
+                    <input type="text"
+                           id="studentCode"
+                           name="code"
+                           placeholder="Ex.: PROJ-2026-001"
+                           autocomplete="off"
+                           required>
+
+                </div>
+
+
+                <button type="submit"
+                        class="access-button">
+
+                    Acessar
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- CONTEÚDO OPERADOR -->
+
+        <div class="access-content hidden"
+             id="operatorContent">
+
+            <h1>Faça seu login</h1>
+
+            <p>
+                Acesse o painel de gerenciamento da oficina.
+            </p>
+
+
+            <form asp-controller="Operator"
+                  asp-action="Login"
+                  method="post">
+
+                <div class="access-field">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           autocomplete="email"
+                           required>
+
+                </div>
+
+
+                <div class="access-field">
+
+                    <label for="password">
+                        Senha
+                    </label>
+
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           autocomplete="current-password"
+                           required>
+
+                </div>
+
+
+                <button type="submit"
+                        class="access-button">
+
+                    Acessar
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<script>
+
+    const studentTab =
+        document.getElementById("studentTab");
+
+    const operatorTab =
+        document.getElementById("operatorTab");
+
+    const studentContent =
+        document.getElementById("studentContent");
+
+    const operatorContent =
+        document.getElementById("operatorContent");
+
+
+    studentTab.addEventListener("click", function () {
+
+        studentTab.classList.add("active");
+        operatorTab.classList.remove("active");
+
+        studentContent.classList.remove("hidden");
+        operatorContent.classList.add("hidden");
+
+    });
+
+
+    operatorTab.addEventListener("click", function () {
+
+        operatorTab.classList.add("active");
+        studentTab.classList.remove("active");
+
+        operatorContent.classList.remove("hidden");
+        studentContent.classList.add("hidden");
+
+    });
+
+</script>

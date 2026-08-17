@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Modo Operador";
+}
+
+<div class="login-container">
+
+    <h1>Modo Operador</h1>
+
+    <p>Entre com suas credenciais para acessar o sistema.</p>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form asp-controller="Operator" asp-action="Login" method="post">
+
+        <div class="mb-3">
+            <label for="email">E-mail</label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="Digite seu e-mail"
+                required />
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Senha</label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Digite sua senha"
+                required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Entrar
+        </button>
+
+    </form>
+
+</div>

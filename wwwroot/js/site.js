@@ -9,6 +9,11 @@
 
     let draggedCard = null;
 
+
+    // ==========================================
+    // INÍCIO DO DRAG
+    // ==========================================
+
     cards.forEach(function (card) {
 
         card.addEventListener("dragstart", function (event) {
@@ -31,6 +36,11 @@
 
         });
 
+
+        // ==========================================
+        // FIM DO DRAG
+        // ==========================================
+
         card.addEventListener("dragend", function () {
 
             console.log("Terminou de arrastar");
@@ -44,20 +54,31 @@
     });
 
 
+    // ==========================================
+    // COLUNAS
+    // ==========================================
+
     columns.forEach(function (column) {
 
         column.addEventListener("dragover", function (event) {
 
             event.preventDefault();
 
+            event.dataTransfer.dropEffect = "move";
+
         });
 
+
+        // ==========================================
+        // DROP
+        // ==========================================
 
         column.addEventListener("drop", async function (event) {
 
             event.preventDefault();
 
             console.log("DROP!");
+
 
             if (!draggedCard) {
 
@@ -68,8 +89,7 @@
                 return;
             }
 
-            // Guarda o cartão antes do fetch
-            // para ele não virar null durante o dragend
+
             const cardToMove = draggedCard;
 
             const projectId =
@@ -83,9 +103,29 @@
             console.log("Novo status:", newStatus);
 
 
+            // Guarda a coluna original
+            const originalColumn =
+                cardToMove.parentElement;
+
+
+            // Não faz requisição se soltou
+            // na mesma coluna
+            if (originalColumn === column) {
+
+                console.log(
+                    "O projeto já está nesta coluna."
+                );
+
+                return;
+            }
+
+
             try {
 
-                console.log("1 - Enviando requisição...");
+                console.log(
+                    "Enviando atualização para o servidor..."
+                );
+
 
                 const response = await fetch(
                     "/Project/UpdateStatusAjax",
@@ -104,87 +144,72 @@
                 );
 
 
-                console.log("2 - Fetch terminou");
-                console.log("3 - Status:", response.status);
-                console.log("4 - OK:", response.ok);
+                console.log(
+                    "Resposta:",
+                    response.status
+                );
 
+
+                // ==========================================
+                // ERRO
+                // ==========================================
 
                 if (!response.ok) {
 
+                    const errorData =
+                        await response.json()
+                            .catch(() => null);
+
                     console.error(
-                        "Erro HTTP:",
-                        response.status
+                        "Erro ao atualizar:",
+                        errorData
                     );
 
+
                     alert(
+                        errorData?.message ??
                         "Não foi possível atualizar o status."
                     );
 
-                    location.reload();
 
                     return;
                 }
 
 
+                // ==========================================
+                // SUCESSO
+                // ==========================================
+
+                const data =
+                    await response.json();
+
+
                 console.log(
-                    "5 - Antes de mover cartão"
+                    "Servidor:",
+                    data
                 );
 
-                console.log(
-                    "Card:",
-                    cardToMove
-                );
 
-                console.log(
-                    "Column:",
-                    column
-                );
-
-
-                // Move o cartão imediatamente
+                // Move o card
                 column.appendChild(cardToMove);
 
 
                 console.log(
-                    "6 - Cartão movido!"
+                    "Cartão movido com sucesso!"
                 );
 
 
-                console.log(
-                    "Status atualizado com sucesso!"
-                );
-
-
-                // Recarrega para atualizar
-                // as contagens das colunas
-                setTimeout(function () {
-
-                    location.reload();
-
-                }, 300);
+                // Atualiza a contagem das colunas
+                updateColumnCounts();
 
 
             } catch (error) {
 
                 console.error(
-                    "ERRO COMPLETO:",
+                    "Erro completo:",
                     error
                 );
 
-                console.error(
-                    "Nome:",
-                    error.name
-                );
-
-                console.error(
-                    "Mensagem:",
-                    error.message
-                );
-
-                console.error(
-                    "Stack:",
-                    error.stack
-                );
 
                 alert(
                     "Não foi possível conectar ao servidor."
@@ -196,14 +221,43 @@
 
     });
 
+
+    // ==========================================
+    // CONTAGEM DAS COLUNAS
+    // ==========================================
+
+    function updateColumnCounts() {
+
+        columns.forEach(function (column) {
+
+            const count =
+                column.querySelectorAll(".project-card").length;
+
+            const counter =
+                column.querySelector(".column-count");
+
+
+            if (counter) {
+                counter.textContent = count;
+            }
+
+        });
+
+    }
+
 });
+
+
+// ==========================================
+// ABRIR DETALHES DO PROJETO
+// ==========================================
 
 function openProjectDetails(event, projectId) {
 
-    // Não abre os detalhes se o usuário estava arrastando
     if (event.defaultPrevented) {
         return;
     }
 
-    window.location.href = `/Project/Details/${projectId}`;
+    window.location.href =
+        `/Project/Details/${projectId}`;
 }

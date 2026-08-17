@@ -1,1 +1,88 @@
-<h1>Student Dashboard</h1>
+@{
+    ViewData["Title"] = "Acompanhar Projeto";
+}
+
+<div class="student-page">
+
+    <div class="student-header">
+
+        <div class="student-logo">
+            <span>Machine</span> Shop
+        </div>
+
+        <h1>Acompanhar projeto</h1>
+
+        <p>
+            Consulte o andamento do seu projeto utilizando o código
+            fornecido pela oficina.
+        </p>
+
+    </div>
+
+
+    <div class="student-card">
+
+        <div class="student-card-icon">
+            🔎
+        </div>
+
+        <h2>Consultar projeto</h2>
+
+        <p class="student-description">
+            Digite abaixo o código do seu projeto.
+        </p>
+
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="student-error">
+                @TempData["Error"]
+            </div>
+        }
+
+
+        <form asp-controller="Student"
+              asp-action="Project"
+              method="get">
+
+            <div class="form-group">
+
+                <label for="code">
+                    Código do projeto
+                </label>
+
+                <input type="text"
+                       id="code"
+                       name="code"
+                       class="form-control"
+                       placeholder="Ex.: PROJ-2026-001"
+                       autocomplete="off"
+                       required />
+
+            </div>
+
+
+            <button type="submit"
+                    class="student-button">
+
+                Consultar projeto
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="student-help">
+
+        <strong>Não sabe o código do projeto?</strong>
+
+        <p>
+            Entre em contato com o responsável pelo atendimento
+            da oficina para solicitar o código.
+        </p>
+
+    </div>
+
+</div>

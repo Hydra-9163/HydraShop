@@ -121,3 +121,577 @@ body {
 .kanban-column:has(.dragging) {
     background-color: #e9ecef;
 }
+
+/* ================================
+   PORTAL DO ALUNO
+================================ */
+
+.student-project-page {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+
+/* Cabeçalho */
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.project-label {
+    font-size: 14px;
+    color: #777;
+}
+
+.project-header h1 {
+    margin: 5px 0;
+}
+
+.project-header p {
+    margin: 0;
+    color: #666;
+}
+
+.back-button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #333;
+    background: white;
+}
+
+.back-button:hover {
+    background: #f5f5f5;
+}
+
+
+/* Status atual */
+
+.current-status-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+}
+
+.status-label {
+    display: block;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.current-status {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.status-recebido {
+    background: #e8f0ff;
+    color: #2455a4;
+}
+
+.status-analise {
+    background: #fff4d6;
+    color: #946200;
+}
+
+.status-fila {
+    background: #eee;
+    color: #555;
+}
+
+.status-material {
+    background: #fff0d9;
+    color: #9a5b00;
+}
+
+.status-producao {
+    background: #e2f5e9;
+    color: #207a3b;
+}
+
+.status-pausado {
+    background: #ffe7e7;
+    color: #a32b2b;
+}
+
+.status-pronto {
+    background: #e2f5ef;
+    color: #176b50;
+}
+
+.status-entregue {
+    background: #dff4e5;
+    color: #176b31;
+}
+
+.status-cancelado {
+    background: #ffe1e1;
+    color: #a00000;
+}
+
+
+/* Cards */
+
+.project-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+}
+
+.info-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+
+/* Informações */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item span {
+    font-size: 13px;
+    color: #777;
+}
+
+
+/* Observações */
+
+.notes {
+    margin: 0;
+    line-height: 1.6;
+    color: #555;
+}
+
+
+/* Timeline */
+
+.status-timeline {
+    position: relative;
+    margin-left: 10px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    padding-bottom: 28px;
+    color: #aaa;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 14px;
+    width: 2px;
+    height: calc(100% - 5px);
+    background: #ddd;
+}
+
+.timeline-dot {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    border-radius: 50%;
+    background: #ddd;
+    margin-top: 3px;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-item.completed {
+    color: #333;
+}
+
+.timeline-item.completed .timeline-dot {
+    background: #333;
+}
+
+.timeline-item.completed:not(:last-child)::before {
+    background: #333;
+}
+
+.timeline-item.current {
+    font-weight: 600;
+}
+
+.timeline-item.current .timeline-dot {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    background: #258cfb;
+    box-shadow: 0 0 0 4px rgba(37, 140, 251, 0.15);
+}
+
+.timeline-item.current p {
+    font-weight: normal;
+}
+
+.timeline-item strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.timeline-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #777;
+}
+
+
+/* Cancelado */
+
+.cancelled-card {
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    border-radius: 12px;
+    padding: 25px;
+    color: #8d0000;
+}
+
+.cancelled-card h2 {
+    margin-top: 0;
+}
+
+/* Projeto pausado */
+
+.paused-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+
+    background: #fff8e5;
+    border: 1px solid #f0d98a;
+    border-radius: 12px;
+
+    padding: 20px;
+    margin-bottom: 25px;
+
+    color: #765900;
+}
+
+.paused-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.paused-card strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.paused-card p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Responsividade */
+
+@media (max-width: 700px) {
+
+    .student-project-page {
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .back-button {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+}
+
+/* ==========================================
+   TELA DE ACESSO
+========================================== */
+
+.login-page {
+    min-height: calc(100vh - 60px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 80px;
+
+    padding: 50px;
+
+    background: #f4f4f4;
+}
+
+
+/* ==========================================
+   LADO ESQUERDO
+========================================== */
+
+.login-info {
+    width: 450px;
+}
+
+.sesi-logo {
+    width: 120px;
+    margin-bottom: 50px;
+}
+
+.project-logos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.hydra-logo {
+    width: 230px;
+}
+
+.mostra-logo {
+    width: 430px;
+    max-width: 100%;
+}
+
+.login-description {
+    max-width: 430px;
+
+    margin-top: 35px;
+
+    font-size: 18px;
+    line-height: 1.5;
+
+    color: #222;
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.access-card {
+    width: 510px;
+
+    background: white;
+
+    border-radius: 35px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ==========================================
+   ABAS
+========================================== */
+
+.access-tabs {
+    display: flex;
+
+    border-bottom: 1px solid #ccc;
+}
+
+.access-tab {
+    flex: 1;
+
+    padding: 25px 15px;
+
+    border: none;
+    border-bottom: 5px solid transparent;
+
+    background: transparent;
+
+    font-size: 17px;
+
+    color: #444;
+
+    cursor: pointer;
+}
+
+.access-tab.active {
+    border-bottom-color: #b40000;
+
+    color: #111;
+}
+
+
+/* ==========================================
+   CONTEÚDO
+========================================== */
+
+.access-content {
+    padding: 45px;
+}
+
+.access-content h1 {
+    margin: 0 0 30px;
+
+    font-size: 28px;
+}
+
+.access-content h2 {
+    margin: 0 0 10px;
+
+    font-size: 20px;
+}
+
+.access-content p {
+    margin-bottom: 30px;
+
+    color: #666;
+}
+
+
+/* ==========================================
+   CAMPOS
+========================================== */
+
+.access-field {
+    margin-bottom: 22px;
+}
+
+.access-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 16px;
+}
+
+.access-field input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px;
+
+    border: none;
+
+    background: #ddd;
+
+    font-size: 16px;
+}
+
+.access-field input:focus {
+    outline: 2px solid #b40000;
+}
+
+
+/* ==========================================
+   BOTÃO
+========================================== */
+
+.access-button {
+    width: 70%;
+
+    display: block;
+
+    margin: 25px auto 0;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background: #b40000;
+
+    color: white;
+
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+.access-button:hover {
+    background: #900000;
+}
+
+
+/* ==========================================
+   TROCA DE CONTEÚDO
+========================================== */
+
+.hidden {
+    display: none;
+}
+
+
+/* ==========================================
+   RESPONSIVIDADE
+========================================== */
+
+@media (max-width: 900px) {
+
+    .login-page {
+        flex-direction: column;
+
+        gap: 40px;
+
+        padding: 30px 20px;
+    }
+
+    .login-info {
+        width: 100%;
+        max-width: 510px;
+    }
+
+    .access-card {
+        width: 100%;
+        max-width: 510px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .login-page {
+        padding: 20px;
+    }
+
+    .access-content {
+        padding: 30px 25px;
+    }
+
+    .access-button {
+        width: 100%;
+    }
+
+}

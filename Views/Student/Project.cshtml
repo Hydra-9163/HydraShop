@@ -1,0 +1,318 @@
+@model MachineShopManager.Models.Project
+@using MachineShopManager.Enums
+
+@{
+    ViewData["Title"] = "Meu Projeto";
+
+    string GetStatusClass(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Recebido => "status-recebido",
+            ProjectStatus.EmAnalise => "status-analise",
+            ProjectStatus.EmFila => "status-fila",
+            ProjectStatus.AguardandoMaterial => "status-material",
+            ProjectStatus.EmProducao => "status-producao",
+            ProjectStatus.Pausado => "status-pausado",
+            ProjectStatus.ProntoParaEntrega => "status-pronto",
+            ProjectStatus.Entregue => "status-entregue",
+            ProjectStatus.Cancelado => "status-cancelado",
+            _ => ""
+        };
+    }
+
+    string GetStatusText(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Recebido => "Recebido",
+            ProjectStatus.EmAnalise => "Em análise",
+            ProjectStatus.EmFila => "Em fila",
+            ProjectStatus.AguardandoMaterial => "Aguardando material",
+            ProjectStatus.EmProducao => "Em produção",
+            ProjectStatus.Pausado => "Pausado",
+            ProjectStatus.ProntoParaEntrega => "Pronto para entrega",
+            ProjectStatus.Entregue => "Entregue",
+            ProjectStatus.Cancelado => "Cancelado",
+            _ => "Desconhecido"
+        };
+    }
+
+    bool IsCompleted(ProjectStatus step)
+    {
+        if (Model.Status == ProjectStatus.Cancelado)
+            return false;
+
+        if (Model.Status == ProjectStatus.Pausado)
+        {
+            return step switch
+            {
+                ProjectStatus.Recebido => true,
+                ProjectStatus.EmAnalise => true,
+                ProjectStatus.EmFila => true,
+                ProjectStatus.AguardandoMaterial => true,
+                ProjectStatus.EmProducao => true,
+                _ => false
+            };
+        }
+
+        return (int)Model.Status >= (int)step;
+    }
+
+    bool IsCurrent(ProjectStatus step)
+    {
+        return Model.Status == step;
+    }
+}
+
+<div class="student-project-page">
+
+    <!-- Cabeçalho -->
+
+    <div class="project-header">
+
+        <div>
+            <span class="project-label">Projeto</span>
+
+            <h1>@Model.ProjectName</h1>
+
+            <p>
+                Código:
+                <strong>@Model.Code</strong>
+            </p>
+        </div>
+
+        <a asp-controller="Student"
+           asp-action="Index"
+           class="back-button">
+            ← Consultar outro projeto
+        </a>
+
+    </div>
+
+
+    <!-- Status atual -->
+
+    <div class="current-status-card">
+
+        <span class="status-label">
+            Status atual
+        </span>
+
+        <div class="current-status @GetStatusClass(Model.Status)">
+            @GetStatusText(Model.Status)
+        </div>
+
+    </div>
+
+
+    <!-- Informações -->
+
+    <div class="project-content">
+
+        <div class="info-card">
+
+            <h2>Informações do projeto</h2>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <span>Aluno</span>
+                    <strong>@Model.StudentName</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Tipo de serviço</span>
+                    <strong>@Model.ServiceType</strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Data de solicitação</span>
+                    <strong>
+                        @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span>Entrega desejada</span>
+                    <strong>
+                        @Model.DesiredDelivery.ToString("dd/MM/yyyy")
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Observações -->
+
+        @if (!string.IsNullOrWhiteSpace(Model.Notes))
+        {
+            <div class="info-card">
+
+                <h2>Observações</h2>
+
+                <p class="notes">
+                    @Model.Notes
+                </p>
+
+            </div>
+        }
+
+
+        <!-- Acompanhamento -->
+
+        <div class="info-card">
+
+            <h2>Acompanhamento</h2>
+
+            <div class="status-timeline">
+
+                <div class="timeline-item 
+                @(IsCompleted(ProjectStatus.Recebido) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.Recebido) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Recebido</strong>
+                        <p>O projeto foi recebido pela oficina.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="timeline-item
+                @(IsCompleted(ProjectStatus.EmAnalise) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.EmAnalise) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Em análise</strong>
+                        <p>O projeto está sendo analisado pela equipe.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="timeline-item
+                @(IsCompleted(ProjectStatus.EmFila) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.EmFila) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Em fila</strong>
+                        <p>O projeto aguarda sua vez na fila de produção.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="timeline-item
+                @(IsCompleted(ProjectStatus.AguardandoMaterial) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.AguardandoMaterial) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Aguardando material</strong>
+                        <p>É necessário aguardar a disponibilidade do material.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="timeline-item
+                @(IsCompleted(ProjectStatus.EmProducao) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.EmProducao) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Em produção</strong>
+                        <p>O projeto está sendo produzido.</p>
+                    </div>
+
+                </div>
+
+                <div class="timeline-item
+                @(IsCompleted(ProjectStatus.ProntoParaEntrega) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.ProntoParaEntrega) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Pronto para entrega</strong>
+                        <p>O projeto está pronto para ser retirado.</p>
+                    </div>
+
+                </div>
+
+                <div class="timeline-item
+                @(IsCompleted(ProjectStatus.Entregue) ? "completed" : "")
+                @(IsCurrent(ProjectStatus.Entregue) ? "Current" : "")">
+
+                    <div class="timeline-dot"></div>
+
+                    <div>
+                        <strong>Entregue</strong>
+                        <p>O projeto foi entregue ao aluno.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Cancelamento -->
+
+        @if (Model.Status == ProjectStatus.Cancelado)
+        {
+            <div class="cancelled-card">
+
+                <h2>Projeto cancelado</h2>
+
+                <p>
+                    Este projeto foi cancelado pela oficina.
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                {
+                    <p>
+                        <strong>Observação:</strong>
+                        @Model.Notes
+                    </p>
+                }
+
+            </div>
+        }
+        
+        <!-- Pausado -->
+        @if (Model.Status == ProjectStatus.Pausado)
+        {
+            <div class="paused-card">
+
+                <div class="paused-icon">
+                    ⏸
+                </div>
+
+                <div>
+                    <strong>Projeto pausado</strong>
+
+                    <p>
+                        A produção deste projeto está temporariamente pausada.
+                        O andamento será retomado assim que a situação for resolvida.
+                    </p>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

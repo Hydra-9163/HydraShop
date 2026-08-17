@@ -7,7 +7,7 @@
 
 <h2>@Model.ProjectName</h2>
 
-<hr/>
+<hr />
 
 <div class="row">
 
@@ -15,78 +15,227 @@
 
         <h5>Informações</h5>
 
-        <p><strong>Código:</strong> @Model.Code</p>
+        <p>
+            <strong>Código:</strong>
+            @Model.Code
+        </p>
 
-        <p><strong>Aluno:</strong> @Model.StudentName</p>
+        <p>
+            <strong>Aluno:</strong>
+            @Model.StudentName
+        </p>
 
-        <p><strong>Email:</strong> @Model.StudentEmail</p>
+        <p>
+            <strong>Email:</strong>
+            @Model.StudentEmail
+        </p>
 
-        <p><strong>Telefone:</strong> @Model.Phone</p>
+        <p>
+            <strong>Telefone:</strong>
+            @Model.Phone
+        </p>
 
     </div>
+
 
     <div class="col-md-6">
 
         <h5>Projeto</h5>
 
-        <p><strong>Serviço:</strong> @Model.ServiceType</p>
+        <p>
+            <strong>Serviço:</strong>
+            @Model.ServiceType
+        </p>
 
-        <p><strong>Status:</strong> @Model.Status</p>
-            <form asp-controller="Project"
-                asp-action="UpdateStatus"
-                method="post"
-                class="mt-3">
+        <p>
+            <strong>Status:</strong>
+            @Model.Status
+        </p>
 
-                <input type="hidden"
-                    name="id"
-                    value="@Model.Id" />
 
-                <label class="form-label">
-                    Alterar status
-                </label>
+        <form asp-controller="Project"
+              asp-action="UpdateStatus"
+              method="post"
+              class="mt-3">
 
-                <div class="input-group">
+            <input type="hidden"
+                   name="id"
+                   value="@Model.Id" />
 
-                    <select name="status"
-                            class="form-select"
-                            asp-items="Html.GetEnumSelectList<ProjectStatus>()">
-                    </select>
+            <label class="form-label">
+                Alterar status
+            </label>
 
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Atualizar
-                    </button>
+            <div class="input-group">
 
-                </div>
+                <select name="status"
+                        class="form-select"
+                        asp-items="Html.GetEnumSelectList<ProjectStatus>()">
+                </select>
 
-            </form>
-        <p><strong>Entrega:</strong> @Model.DesiredDelivery.ToShortDateString()</p>
+                <button type="submit"
+                        class="btn btn-primary">
+                    Atualizar
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <p class="mt-3">
+            <strong>Entrega:</strong>
+            @Model.DesiredDelivery.ToShortDateString()
+        </p>
 
     </div>
 
 </div>
 
-<hr/>
+
+<hr />
 
 <h5>Observações</h5>
 
 <div class="border rounded p-3">
 
-    @Model.Notes
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        @Model.Notes
+    }
+    else
+    {
+        <span class="text-muted">
+            Nenhuma observação registrada.
+        </span>
+    }
 
 </div>
+
+
+<!-- ===================================== -->
+<!-- RELATÓRIO FOTOGRÁFICO -->
+<!-- ===================================== -->
+
+<hr />
+
+<h5>Relatório Fotográfico</h5>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+
+<form asp-controller="Project"
+      asp-action="UploadPhoto"
+      method="post"
+      enctype="multipart/form-data"
+      class="mb-4">
+
+    <input type="hidden"
+           name="projectId"
+           value="@Model.Id" />
+
+
+    <div class="mb-3">
+
+        <label class="form-label">
+            Adicionar foto ao relatório
+        </label>
+
+        <input type="file"
+               name="photo"
+               class="form-control"
+               accept=".jpg,.jpeg,.png"
+               required />
+
+    </div>
+
+
+    <button type="submit"
+            class="btn btn-primary">
+
+        📷 Adicionar Foto
+
+    </button>
+
+</form>
+
+
+<!-- ===================================== -->
+<!-- GALERIA DE FOTOS -->
+<!-- ===================================== -->
+
+@if (Model.Photos != null && Model.Photos.Any())
+{
+    <div class="row g-3">
+
+        @foreach (var photo in Model.Photos)
+        {
+            <div class="col-md-4">
+
+                <div class="card shadow-sm">
+
+                    <img src="@photo.FilePath"
+                         class="card-img-top"
+                         alt="@photo.FileName"
+                         style="height: 220px; object-fit: cover;" />
+
+                    <div class="card-body">
+
+                        <small class="text-muted">
+                            @photo.UploadedAt
+                                .ToLocalTime()
+                                .ToString("dd/MM/yyyy HH:mm")
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">
+        Nenhuma foto foi adicionada ao relatório ainda.
+    </div>
+}
+
+
+<!-- ===================================== -->
+<!-- BOTÕES -->
+<!-- ===================================== -->
 
 <div class="mt-4">
 
     <a asp-action="Edit"
        asp-route-id="@Model.Id"
        class="btn btn-primary">
+
         Editar Projeto
+
     </a>
+
 
     <a asp-action="Index"
        class="btn btn-secondary">
+
         Voltar
+
     </a>
 
 </div>

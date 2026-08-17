@@ -42,4 +42,7 @@ public class Project
     public string? Notes { get; set; }
 
     public bool Archived { get; set; } = false;
+
+    public ICollection<ProjectPhoto> Photos { get; set; }
+    = new List<ProjectPhoto>();
 }
