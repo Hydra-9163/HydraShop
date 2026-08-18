@@ -1,0 +1,42 @@
+@model IEnumerable<MachineShopManager.Models.Project>
+
+@{
+    ViewData["Title"] = "Projetos Arquivados";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Projetos Arquivados</h2>
+            <p class="text-secondary mb-0">Projetos arquivados não aparecem no Kanban ativo.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary">Projetos ativos</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-secondary">Não há projetos arquivados.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr><th>Código</th><th>Projeto</th><th>Aluno</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody>
+                @foreach (var project in Model)
+                {
+                    <tr>
+                        <td>@project.Code</td>
+                        <td>@project.ProjectName</td>
+                        <td>@project.StudentName</td>
+                        <td>@project.Status</td>
+                        <td class="text-end"><a asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-primary">Detalhes</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

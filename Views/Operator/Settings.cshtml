@@ -1,0 +1,154 @@
+@model MachineShopManager.ViewModels.OperatorSettingsViewModel
+
+@{
+    ViewData["Title"] = "Configurações";
+}
+
+<div class="container-fluid px-0">
+    <div class="mb-4">
+        <h1 class="h3 mb-1">Configurações</h1>
+        <p class="text-secondary mb-0">Gerencie a conta usada para acessar o painel administrativo.</p>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <h2 class="h5 card-title">Outros operadores</h2>
+            <p class="text-secondary small">As senhas nunca são exibidas. Para alterá-las, informe a senha atual do operador selecionado.</p>
+
+            @if (Model.OtherOperators.Any())
+            {
+                <div class="table-responsive mb-4">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>E-mail</th><th class="text-end">Ação</th></tr></thead>
+                        <tbody>
+                        @foreach (var item in Model.OtherOperators)
+                        {
+                            <tr>
+                                <td>@item.Email</td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-operator-id="@item.Id" data-operator-email="@item.Email">Gerenciar senha</button>
+                                    <form asp-action="DeleteOperator" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir o operador? Esta ação não poderá ser desfeita.');">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-secondary">Nenhum outro operador cadastrado.</p>
+            }
+
+            <form asp-action="ChangeOtherOperatorPassword" method="post" id="otherOperatorPasswordForm" class="border-top pt-3">
+                <input asp-for="OtherOperatorPassword.OperatorId" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                <p id="selectedOperator" class="fw-semibold mb-3">Selecione um operador na lista para gerenciar a senha.</p>
+                <div class="row g-3">
+                    <div class="col-md-4"><label asp-for="OtherOperatorPassword.CurrentPassword" class="form-label"></label><input asp-for="OtherOperatorPassword.CurrentPassword" class="form-control" autocomplete="current-password" /><span asp-validation-for="OtherOperatorPassword.CurrentPassword" class="text-danger"></span></div>
+                    <div class="col-md-4"><label asp-for="OtherOperatorPassword.NewPassword" class="form-label"></label><input asp-for="OtherOperatorPassword.NewPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="OtherOperatorPassword.NewPassword" class="text-danger"></span></div>
+                    <div class="col-md-4"><label asp-for="OtherOperatorPassword.ConfirmNewPassword" class="form-label"></label><input asp-for="OtherOperatorPassword.ConfirmNewPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="OtherOperatorPassword.ConfirmNewPassword" class="text-danger"></span></div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Validar e alterar senha</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <h2 class="h5 card-title">Criar operador</h2>
+            <form asp-action="CreateOperator" method="post">
+                <div class="row g-3">
+                    <div class="col-md-4"><label asp-for="NewOperator.Email" class="form-label"></label><input asp-for="NewOperator.Email" class="form-control" autocomplete="email" /><span asp-validation-for="NewOperator.Email" class="text-danger"></span></div>
+                    <div class="col-md-4"><label asp-for="NewOperator.Password" class="form-label"></label><input asp-for="NewOperator.Password" class="form-control" autocomplete="new-password" /><span asp-validation-for="NewOperator.Password" class="text-danger"></span></div>
+                    <div class="col-md-4"><label asp-for="NewOperator.ConfirmPassword" class="form-label"></label><input asp-for="NewOperator.ConfirmPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="NewOperator.ConfirmPassword" class="text-danger"></span></div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Criar operador</button>
+            </form>
+        </div>
+    </div>
+
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="alert alert-success" role="alert">@successMessage</div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger" role="alert">@errorMessage</div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Conta do operador</h2>
+                    <p class="text-secondary small">O e-mail também é utilizado no login.</p>
+
+                    <form asp-action="UpdateProfile" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Profile.Email" class="form-label"></label>
+                            <input asp-for="Profile.Email" class="form-control" autocomplete="email" />
+                            <span asp-validation-for="Profile.Email" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Salvar e-mail</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Alterar senha</h2>
+                    <p class="text-secondary small">A nova senha deve atender à política de segurança da conta.</p>
+
+                    <form asp-action="ChangePassword" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password.CurrentPassword" class="form-label"></label>
+                            <input asp-for="Password.CurrentPassword" class="form-control" autocomplete="current-password" />
+                            <span asp-validation-for="Password.CurrentPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password.NewPassword" class="form-label"></label>
+                            <input asp-for="Password.NewPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password.NewPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password.ConfirmNewPassword" class="form-label"></label>
+                            <input asp-for="Password.ConfirmNewPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password.ConfirmNewPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Alterar senha</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-light border mt-4 mb-0" role="note">
+        Não há configurações de sistema persistíveis definidas na arquitetura atual.
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('[data-operator-id]').forEach(button => button.addEventListener('click', () => {
+            document.getElementById('OtherOperatorPassword_OperatorId').value = button.dataset.operatorId;
+            document.getElementById('selectedOperator').textContent = `Operador selecionado: ${button.dataset.operatorEmail}`;
+            document.getElementById('OtherOperatorPassword_CurrentPassword').focus();
+        }));
+    </script>
+}

@@ -82,7 +82,7 @@
             </p>
         </div>
 
-        <a asp-controller="Student"
+        <a asp-controller="Home"
            asp-action="Index"
            class="back-button">
             ← Consultar outro projeto
@@ -160,6 +160,11 @@
             </div>
         }
 
+        @if (Model.ServiceRequirement != null)
+        {
+            <partial name="_ServiceRequirements" model="Model.ServiceRequirement" />
+        }
+
 
         <!-- Acompanhamento -->
 
@@ -171,7 +176,7 @@
 
                 <div class="timeline-item 
                 @(IsCompleted(ProjectStatus.Recebido) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.Recebido) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.Recebido) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 
@@ -185,7 +190,7 @@
 
                 <div class="timeline-item
                 @(IsCompleted(ProjectStatus.EmAnalise) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.EmAnalise) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.EmAnalise) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 
@@ -199,7 +204,7 @@
 
                 <div class="timeline-item
                 @(IsCompleted(ProjectStatus.EmFila) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.EmFila) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.EmFila) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 
@@ -213,7 +218,7 @@
 
                 <div class="timeline-item
                 @(IsCompleted(ProjectStatus.AguardandoMaterial) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.AguardandoMaterial) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.AguardandoMaterial) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 
@@ -227,7 +232,7 @@
 
                 <div class="timeline-item
                 @(IsCompleted(ProjectStatus.EmProducao) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.EmProducao) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.EmProducao) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 
@@ -240,7 +245,7 @@
 
                 <div class="timeline-item
                 @(IsCompleted(ProjectStatus.ProntoParaEntrega) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.ProntoParaEntrega) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.ProntoParaEntrega) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 
@@ -253,7 +258,7 @@
 
                 <div class="timeline-item
                 @(IsCompleted(ProjectStatus.Entregue) ? "completed" : "")
-                @(IsCurrent(ProjectStatus.Entregue) ? "Current" : "")">
+                @(IsCurrent(ProjectStatus.Entregue) ? "current" : "")">
 
                     <div class="timeline-dot"></div>
 

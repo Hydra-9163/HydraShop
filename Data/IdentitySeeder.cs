@@ -15,7 +15,14 @@ public static class IdentitySeeder
         // Cria a role Operator caso ela ainda não exista
         if (!await roleManager.RoleExistsAsync(roleName))
         {
-            await roleManager.CreateAsync(new IdentityRole(roleName));
+            var roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+
+            if (!roleResult.Succeeded)
+            {
+                var errors = string.Join(", ", roleResult.Errors.Select(e => e.Description));
+                throw new InvalidOperationException(
+                    $"Não foi possível criar a role inicial de operador: {errors}");
+            }
         }
 
         const string email = "operador@machineshop.com";
@@ -51,7 +58,14 @@ public static class IdentitySeeder
         // Garante que o usuário pertence à role Operator
         if (!await userManager.IsInRoleAsync(user, roleName))
         {
-            await userManager.AddToRoleAsync(user, roleName);
+            var assignmentResult = await userManager.AddToRoleAsync(user, roleName);
+
+            if (!assignmentResult.Succeeded)
+            {
+                var errors = string.Join(", ", assignmentResult.Errors.Select(e => e.Description));
+                throw new InvalidOperationException(
+                    $"Não foi possível atribuir a role Operator ao usuário inicial: {errors}");
+            }
         }
     }
 }

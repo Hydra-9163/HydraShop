@@ -1,0 +1,99 @@
+@model MachineShopManager.ViewModels.OperatorStatisticsViewModel
+
+@{
+    ViewData["Title"] = "Estatísticas";
+}
+
+<div class="container-fluid px-0">
+    <div class="mb-4">
+        <h1 class="h3 mb-1">Estatísticas</h1>
+        <p class="text-secondary mb-0">Resumo atualizado a partir dos projetos cadastrados.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-secondary small text-uppercase">Total de projetos</div>
+                    <div class="display-6 fw-semibold">@Model.TotalProjects</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-secondary small text-uppercase">Projetos ativos</div>
+                    <div class="display-6 fw-semibold text-primary">@Model.ActiveProjects</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-secondary small text-uppercase">Projetos arquivados</div>
+                    <div class="display-6 fw-semibold text-secondary">@Model.ArchivedProjects</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <h2 class="h5 mb-0">Projetos ativos por status</h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="ps-3">Status</th>
+                            <th scope="col" class="text-end pe-3">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var statistic in Model.Statuses)
+                        {
+                            <tr>
+                                <td class="ps-3">@statistic.Label</td>
+                                <td class="text-end pe-3"><span class="badge text-bg-primary">@statistic.Count</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-header bg-white">
+            <h2 class="h5 mb-0">Histórico geral</h2>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.History.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead><tr><th class="ps-3">Data/hora</th><th>Projeto</th><th>Alteração</th><th class="pe-3">Operador</th></tr></thead>
+                        <tbody>
+                        @foreach (var entry in Model.History)
+                        {
+                            <tr>
+                                <td class="ps-3">@entry.ChangedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@entry.ProjectCode</td>
+                                <td>@entry.Description</td>
+                                <td class="pe-3">@(entry.OperatorEmail ?? "Não informado")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-secondary p-3 mb-0">Nenhuma movimentação registrada.</p>
+            }
+        </div>
+    </div>
+</div>

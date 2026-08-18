@@ -1,206 +1,72 @@
-﻿@{
+@{
     ViewData["Title"] = "Acesso";
+    var selectedMode = (string?)TempData["SelectedAccessMode"] ?? Context.Request.Query["mode"].ToString();
+    var operatorSelected = selectedMode == "operator";
 }
 
-<div class="login-page">
+<main class="access-page">
+    <section class="access-intro">
+        <img src="~/images/hydra-logo.png" class="hydra-logo" alt="HYDRA FRC" />
+        <div class="mostra-block">
+            <hr class="mostra-divider" />
+            <img src="~/images/mostra-logo.png" class="mostra-logo" alt="Mostra STEAM SESI" />
+        </div>
+        <p>Plataforma de acompanhamento e gerenciamento de projetos da oficina.</p>
+    </section>
 
-    <!-- LADO ESQUERDO -->
-
-    <div class="login-info">
-
-        <img src="~/images/sesi-logo.png"
-             class="sesi-logo"
-             alt="SESI">
-
-        <div class="project-logos">
-
-            <img src="~/images/hydra-logo.png"
-                 class="hydra-logo"
-                 alt="HYDRA FRC">
-
-            <img src="~/images/mostra-logo.png"
-                 class="mostra-logo"
-                 alt="MOSTRA STEAM SESI">
-
+    <section class="access-card" aria-label="Escolha o modo de acesso">
+        <div class="access-tabs" data-selected="@(operatorSelected ? "operator" : "student")">
+            <button type="button" class="access-tab @(!operatorSelected ? "active" : "")" data-mode="student">Modo estudante</button>
+            <button type="button" class="access-tab @(operatorSelected ? "active" : "")" data-mode="operator">Modo operador</button>
+            <span class="access-tab-indicator" aria-hidden="true"></span>
         </div>
 
-        <p class="login-description">
-            Plataforma de apoio ao ensino para estudantes
-            cientistas do SESI.
-        </p>
-
-    </div>
-
-
-    <!-- LADO DIREITO -->
-
-    <div class="access-card">
-
-        <!-- ABAS -->
-
-        <div class="access-tabs">
-
-            <button type="button"
-                    class="access-tab active"
-                    id="studentTab">
-
-                Acesso do estudante
-
-            </button>
-
-            <button type="button"
-                    class="access-tab"
-                    id="operatorTab">
-
-                Modo operador
-
-            </button>
-
-        </div>
-
-
-        <!-- CONTEÚDO ESTUDANTE -->
-
-        <div class="access-content"
-             id="studentContent">
-
-            <h1>Acesse a plataforma</h1>
-
-            <h2>Consulte seu projeto</h2>
-
-            <p>
-                Informe o código fornecido pela oficina.
-            </p>
-
-
-            <form asp-controller="Student"
-                  asp-action="Project"
-                  method="get">
-
+        <div class="access-content @(!operatorSelected ? "" : "hidden")" data-content="student">
+            <h1>Acompanhe seu projeto</h1>
+            <p>Informe o código fornecido pela oficina.</p>
+            @if (TempData["StudentError"] is string studentError)
+            {
+                <div class="access-alert" role="alert">@studentError</div>
+            }
+            <form asp-controller="Student" asp-action="Project" method="get">
                 <div class="access-field">
-
-                    <label for="studentCode">
-                        Código do projeto
-                    </label>
-
-                    <input type="text"
-                           id="studentCode"
-                           name="code"
-                           placeholder="Ex.: PROJ-2026-001"
-                           autocomplete="off"
-                           required>
-
+                    <label for="studentCode">Código do projeto</label>
+                    <input id="studentCode" name="code" placeholder="Ex.: HYDRA-1234-1" autocomplete="off" required />
                 </div>
-
-
-                <button type="submit"
-                        class="access-button">
-
-                    Acessar
-
-                </button>
-
+                <button type="submit" class="access-button">Consultar projeto</button>
             </form>
-
         </div>
 
-
-        <!-- CONTEÚDO OPERADOR -->
-
-        <div class="access-content hidden"
-             id="operatorContent">
-
-            <h1>Faça seu login</h1>
-
-            <p>
-                Acesse o painel de gerenciamento da oficina.
-            </p>
-
-
-            <form asp-controller="Operator"
-                  asp-action="Login"
-                  method="post">
-
+        <div class="access-content @(operatorSelected ? "" : "hidden")" data-content="operator">
+            <h1>Área do operador</h1>
+            <p>Entre para acessar o gerenciamento da oficina.</p>
+            @if (TempData["OperatorError"] is string operatorError)
+            {
+                <div class="access-alert" role="alert">@operatorError</div>
+            }
+            <form asp-controller="Operator" asp-action="Login" method="post">
+                <input type="hidden" name="returnUrl" value="@Context.Request.Query["returnUrl"]" />
                 <div class="access-field">
-
-                    <label for="email">
-                        Email
-                    </label>
-
-                    <input type="email"
-                           id="email"
-                           name="email"
-                           autocomplete="email"
-                           required>
-
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" autocomplete="email" required />
                 </div>
-
-
                 <div class="access-field">
-
-                    <label for="password">
-                        Senha
-                    </label>
-
-                    <input type="password"
-                           id="password"
-                           name="password"
-                           autocomplete="current-password"
-                           required>
-
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required />
                 </div>
-
-
-                <button type="submit"
-                        class="access-button">
-
-                    Acessar
-
-                </button>
-
+                <button type="submit" class="access-button">Entrar</button>
             </form>
-
         </div>
+    </section>
+</main>
 
-    </div>
-
-</div>
-
-
+@section Scripts {
 <script>
-
-    const studentTab =
-        document.getElementById("studentTab");
-
-    const operatorTab =
-        document.getElementById("operatorTab");
-
-    const studentContent =
-        document.getElementById("studentContent");
-
-    const operatorContent =
-        document.getElementById("operatorContent");
-
-
-    studentTab.addEventListener("click", function () {
-
-        studentTab.classList.add("active");
-        operatorTab.classList.remove("active");
-
-        studentContent.classList.remove("hidden");
-        operatorContent.classList.add("hidden");
-
-    });
-
-
-    operatorTab.addEventListener("click", function () {
-
-        operatorTab.classList.add("active");
-        studentTab.classList.remove("active");
-
-        operatorContent.classList.remove("hidden");
-        studentContent.classList.add("hidden");
-
-    });
-
+    document.querySelectorAll('.access-tab').forEach(tab => tab.addEventListener('click', () => {
+        const mode = tab.dataset.mode;
+        document.querySelector('.access-tabs').dataset.selected = mode;
+        document.querySelectorAll('.access-tab').forEach(item => item.classList.toggle('active', item === tab));
+        document.querySelectorAll('[data-content]').forEach(content => content.classList.toggle('hidden', content.dataset.content !== mode));
+    }));
 </script>
+}

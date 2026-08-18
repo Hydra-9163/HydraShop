@@ -3,6 +3,23 @@
 
 @{
     ViewData["Title"] = "Detalhes";
+
+    string GetStatusText(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Recebido => "Recebido",
+            ProjectStatus.EmAnalise => "Em análise",
+            ProjectStatus.EmFila => "Em fila",
+            ProjectStatus.AguardandoMaterial => "Aguardando material",
+            ProjectStatus.EmProducao => "Em produção",
+            ProjectStatus.Pausado => "Pausado",
+            ProjectStatus.ProntoParaEntrega => "Pronto para entrega",
+            ProjectStatus.Entregue => "Entregue",
+            ProjectStatus.Cancelado => "Cancelado",
+            _ => "Desconhecido"
+        };
+    }
 }
 
 <h2>@Model.ProjectName</h2>
@@ -91,6 +108,11 @@
     </div>
 
 </div>
+
+@if (Model.ServiceRequirement != null)
+{
+    <partial name="_ServiceRequirements" model="Model.ServiceRequirement" />
+}
 
 
 <hr />
@@ -215,20 +237,86 @@ else
     </div>
 }
 
+<div class="card mb-4">
+
+    <div class="card-header">
+        <h4 class="mb-0">Histórico do projeto</h4>
+    </div>
+
+    <div class="card-body">
+
+        @if (Model.History != null && Model.History.Any())
+        {
+            <div class="project-history">
+
+                @foreach (var history in Model.History)
+                {
+                    <div class="history-item">
+
+                        <div class="history-dot"></div>
+
+                        <div class="history-content">
+
+                            <strong>
+                                @GetStatusText(history.NewStatus)
+                            </strong>
+
+                            <p class="mb-1">
+                                @history.Description
+                            </p>
+
+                            <small class="text-secondary">
+                                @history.ChangedAt
+                                    .ToLocalTime()
+                                    .ToString("dd/MM/yyyy 'às' HH:mm")
+                                <br />
+                                Por: @(history.OperatorEmail ?? "Operador não informado")
+                            </small>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <p class="text-secondary mb-0">
+                Nenhuma alteração registrada.
+            </p>
+        }
+
+    </div>
+
+</div>
 
 <!-- ===================================== -->
 <!-- BOTÕES -->
 <!-- ===================================== -->
 
 <div class="mt-4">
+    @if (Model.Archived)
+    {
+        <form asp-action="Restore" method="post" class="d-inline">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-success">Desarquivar projeto</button>
+        </form>
+    }
+    else
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar Projeto</a>
+        <form asp-action="Archive" method="post" class="d-inline" onsubmit="return confirm('Arquivar este projeto?');">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-outline-danger">Arquivar projeto</button>
+        </form>
+    }
 
-    <a asp-action="Edit"
-       asp-route-id="@Model.Id"
-       class="btn btn-primary">
+    <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Excluir este projeto permanentemente? Essa ação não pode ser desfeita e vai apagar todos os arquivos, fotos e histórico do projeto.');">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Excluir projeto</button>
+    </form>
 
-        Editar Projeto
-
-    </a>
 
 
     <a asp-action="Index"

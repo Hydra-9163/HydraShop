@@ -7,7 +7,6 @@ public class Project
 {
     public int Id { get; set; }
 
-    [Required]
     [Display(Name = "Código do Projeto")]
     public string Code { get; set; } = string.Empty;
 
@@ -45,4 +44,9 @@ public class Project
 
     public ICollection<ProjectPhoto> Photos { get; set; }
     = new List<ProjectPhoto>();
+
+    public ICollection<ProjectHistory> History { get; set; }
+    = new List<ProjectHistory>();
+
+    public ProjectServiceRequirement? ServiceRequirement { get; set; }
 }

@@ -53,7 +53,7 @@
 
                 <div class="mb-3">
                     <label asp-for="Code" class="form-label"></label>
-                    <input asp-for="Code" class="form-control" />
+                    <p class="form-control-plaintext mb-0">@Model.Code</p>
                 </div>
 
                 <div class="mb-3">
@@ -61,13 +61,11 @@
                     <input asp-for="ProjectName" class="form-control" />
                 </div>
 
+                <input type="hidden" asp-for="ServiceType" />
                 <div class="mb-3">
-                    <label asp-for="ServiceType" class="form-label"></label>
-
-                    <select asp-for="ServiceType"
-                            asp-items="Html.GetEnumSelectList<ServiceType>()"
-                            class="form-select">
-                    </select>
+                    <label class="form-label">Tipo de Serviço</label>
+                    <p class="form-control-plaintext mb-0">@Model.ServiceType</p>
+                    <small class="text-muted">O tipo de serviço não pode ser alterado após o cadastro, para preservar os requisitos técnicos.</small>
                 </div>
 
                 <div class="mb-3">
@@ -97,6 +95,11 @@
 
             </div>
         </div>
+
+        @if (Model.ServiceRequirement != null)
+        {
+            <partial name="_ServiceRequirements" model="Model.ServiceRequirement" />
+        }
 
         <button type="submit" class="btn btn-success">
             Salvar Alterações

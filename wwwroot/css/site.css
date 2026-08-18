@@ -21,6 +21,8 @@ body {
   margin-bottom: 60px;
 }
 
+.public-body { margin-bottom: 0; background: var(--page-background); }
+
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
@@ -694,4 +696,144 @@ body {
         width: 100%;
     }
 
+}
+
+.project-history {
+    position: relative;
+    padding-left: 30px;
+}
+
+.project-history::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    bottom: 5px;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.history-item {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.history-item:last-child {
+    margin-bottom: 0;
+}
+
+.history-dot {
+    position: absolute;
+    left: -28px;
+    top: 4px;
+
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+    background: #0d6efd;
+
+    border: 3px solid white;
+    box-shadow: 0 0 0 1px #0d6efd;
+}
+
+.history-content strong {
+    display: block;
+    font-size: 1rem;
+}
+
+.history-content p {
+    margin-top: 4px;
+    margin-bottom: 2px;
+}
+
+/* Identidade visual institucional */
+:root {
+    --sesi-red: #d71920;
+    --sesi-red-dark: #ab1017;
+    --sesi-red-light: #fce8e9;
+    --surface: #ffffff;
+    --page-background: #f4f5f7;
+    --text-primary: #20242a;
+}
+
+.institutional-header {
+    height: 92px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 22px;
+    background: var(--sesi-red);
+}
+
+.institutional-header img { max-height: 42px; max-width: 142px; object-fit: contain; }
+.institutional-header img + img { max-height: 78px; max-width: 260px; filter: brightness(0) invert(1); }
+.sidebar { top: 72px; height: calc(100vh - 72px); }
+.operator-shell { margin-left: 260px; padding: 30px; }
+.public-shell { min-height: calc(100vh - 92px); }
+
+.operator-body { background: var(--page-background); }
+.operator-body .sidebar { top: 0; height: 100vh; background: #18222d; display: flex; flex-direction: column; }
+.operator-body .sidebar a { padding: 9px 12px; margin: 3px 0; border-radius: 6px; }
+.operator-body .sidebar a:hover { opacity: 1; background: rgba(255, 255, 255, .1); }
+.sidebar-hydra-logo { display: block; width: 175px; max-width: 100%; margin: 0 auto; filter: brightness(0) invert(1); }
+.sidebar-logout { margin-top: auto; }
+.sidebar-logout button { width: 100%; padding: 10px 12px; border: 1px solid rgba(255,255,255,.45); border-radius: 6px; background: transparent; color: white; text-align: left; }
+.sidebar-logout button:hover { background: var(--sesi-red); border-color: var(--sesi-red); }
+
+.access-page {
+    min-height: calc(100vh - 92px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    padding: 50px;
+    background: var(--page-background);
+}
+
+.access-intro { width: min(430px, 100%); }
+.access-intro .hydra-logo { width: 340px; max-width: 100%; display: block; margin: 0 auto -95px; }
+.mostra-divider { border: none; border-top: 3px solid var(--sesi-red); width: 430px; max-width: 100%; margin: 0 auto 20px; }
+.access-intro .mostra-logo { width: 430px; max-width: 100%; display: block; margin: 0 auto; }
+.access-intro p { margin-top: 32px; font-size: 1.1rem; line-height: 1.55; color: #444; }
+.access-card { width: min(510px, 100%); border-radius: 24px; }
+.access-tabs { position: relative; }
+.access-tab { border-bottom: 0; position: relative; z-index: 1; }
+.access-tab.active { color: var(--sesi-red); }
+.access-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 50%;
+    background: var(--sesi-red);
+    transition: transform .28s ease;
+}
+.access-tabs[data-selected="operator"] .access-tab-indicator { transform: translateX(100%); }
+.access-field input { background: #f1f2f4; border: 1px solid #d5d8dc; border-radius: 6px; }
+.access-field input:focus { outline: none; border-color: var(--sesi-red); box-shadow: 0 0 0 3px rgba(215, 25, 32, .12); }
+.access-button { background: var(--sesi-red); border-radius: 8px; }
+.access-button:hover { background: var(--sesi-red-dark); }
+.access-alert { margin: 0 0 20px; padding: 12px 14px; border-left: 4px solid var(--sesi-red); border-radius: 4px; background: var(--sesi-red-light); color: #791016; }
+.btn-primary { --bs-btn-bg: var(--sesi-red); --bs-btn-border-color: var(--sesi-red); --bs-btn-hover-bg: var(--sesi-red-dark); --bs-btn-hover-border-color: var(--sesi-red-dark); }
+
+@media (max-width: 900px) {
+    .access-page { flex-direction: column; gap: 35px; padding: 32px 20px; }
+    .access-intro { text-align: center; }
+    .access-intro .hydra-logo, .access-intro .mostra-logo { margin-left: auto; margin-right: auto; }
+    .operator-shell { margin-left: 0; padding: 20px; }
+    .sidebar, .operator-body .sidebar { position: static; width: 100%; height: auto; }
+}
+
+@media (max-width: 600px) {
+    .institutional-header { height: 74px; padding: 0 20px; gap: 14px; }
+    .institutional-header img { max-height: 30px; max-width: 100px; }
+    .institutional-header img + img { max-height: 56px; max-width: 161px; }
+    .sidebar { top: 62px; height: auto; }
+    .access-page { min-height: calc(100vh - 74px); padding: 24px 16px; }
+    .access-content { padding: 30px 24px; }
+    .access-tab { font-size: .95rem; padding: 18px 8px; }
 }

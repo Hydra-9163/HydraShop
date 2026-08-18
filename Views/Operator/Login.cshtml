@@ -17,6 +17,10 @@
 
     <form asp-controller="Operator" asp-action="Login" method="post">
 
+        <input type="hidden"
+               name="returnUrl"
+               value="@(ViewData["ReturnUrl"])" />
+
         <div class="mb-3">
             <label for="email">E-mail</label>
 

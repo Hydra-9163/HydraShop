@@ -137,6 +137,44 @@ namespace MachineShopManager.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("MachineShopManager.Models.ProjectHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("NewStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("OperatorEmail")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PreviousStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ProjectCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectHistories");
+                });
+
             modelBuilder.Entity("MachineShopManager.Models.ProjectPhoto", b =>
                 {
                     b.Property<int>("Id")
@@ -164,6 +202,148 @@ namespace MachineShopManager.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("ProjectPhotos");
+                });
+
+            modelBuilder.Entity("MachineShopManager.Models.ProjectServiceRequirement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BaseMaterials")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BendAngles")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BendingDrawingFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BendingDrawingFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CncModelFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CncModelFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FilamentColor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FinalApplication")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GrainDirection")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HoleDepth")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HoleDiameter")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HolePositionFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HolePositionFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HoleTolerance")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Infill")
+                        .HasColumnType("text");
+
+                    b.Property<string>("InnerRadius")
+                        .HasColumnType("text");
+
+                    b.Property<string>("InspectionRequirement")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MaterialSpecification")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MaximumDimensions")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostProcessing")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostTreatment")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PreferredOrientation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrintMaterial")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReferenceFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReferenceFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ServiceType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SheetMaterial")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SheetThickness")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SurfaceRoughness")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TechnicalDrawingFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TechnicalDrawingFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThreadOrRecess")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThreeDFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThreeDFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VisualToleranceSide")
+                        .HasColumnType("text");
+
+                    b.Property<string>("WeldFinish")
+                        .HasColumnType("text");
+
+                    b.Property<string>("WeldingDrawingFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("WeldingDrawingFilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("WeldingProcess")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId")
+                        .IsUnique();
+
+                    b.ToTable("ProjectServiceRequirements");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -298,11 +478,32 @@ namespace MachineShopManager.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MachineShopManager.Models.ProjectHistory", b =>
+                {
+                    b.HasOne("MachineShopManager.Models.Project", "Project")
+                        .WithMany("History")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("MachineShopManager.Models.ProjectPhoto", b =>
                 {
                     b.HasOne("MachineShopManager.Models.Project", "Project")
                         .WithMany("Photos")
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("MachineShopManager.Models.ProjectServiceRequirement", b =>
+                {
+                    b.HasOne("MachineShopManager.Models.Project", "Project")
+                        .WithOne("ServiceRequirement")
+                        .HasForeignKey("MachineShopManager.Models.ProjectServiceRequirement", "ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -362,7 +563,11 @@ namespace MachineShopManager.Migrations
 
             modelBuilder.Entity("MachineShopManager.Models.Project", b =>
                 {
+                    b.Navigation("History");
+
                     b.Navigation("Photos");
+
+                    b.Navigation("ServiceRequirement");
                 });
 #pragma warning restore 612, 618
         }

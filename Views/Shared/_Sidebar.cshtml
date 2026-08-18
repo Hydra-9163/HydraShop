@@ -1,10 +1,9 @@
+@if (User.Identity?.IsAuthenticated == true && User.IsInRole("Operator"))
+{
 <div class="sidebar">
 
     <div class="logo">
-
-        <h4>Machine Shop</h4>
-
-        <small>Manager</small>
+        <img src="~/images/hydra-logo.png" alt="HYDRA FRC" class="sidebar-hydra-logo" />
 
     </div>
 
@@ -24,22 +23,37 @@
 
     </a>
 
-    <a href="#">
+    <a asp-controller="Project"
+       asp-action="Archived">
 
         Arquivados
 
     </a>
 
-    <a href="#">
+    <a asp-controller="Project"
+       asp-action="Index">
+
+        Projetos
+
+    </a>
+
+    <a asp-controller="Operator"
+       asp-action="Statistics">
 
         Estatísticas
 
     </a>
 
-    <a href="#">
+    <a asp-controller="Operator"
+       asp-action="Settings">
 
         Configurações
 
     </a>
 
+    <form asp-controller="Operator" asp-action="Logout" method="post" class="sidebar-logout">
+        <button type="submit">Sair</button>
+    </form>
+
 </div>
+}

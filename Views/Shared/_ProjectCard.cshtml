@@ -1,13 +1,14 @@
 @model MachineShopManager.Models.Project
 
-<a asp-controller="Operator"
+<a class="project-card d-block"
+   draggable="true"
+   data-project-id="@Model.Id"
+   asp-controller="Project"
    asp-action="Details"
    asp-route-id="@Model.Id"
    style="text-decoration: none; color: inherit;">
 
-    <div class="card shadow-sm mb-3 project-card"
-         draggable="true"
-         data-project-id="@Model.Id">
+    <div class="card shadow-sm mb-3">
 
         <div class="card-body">
 

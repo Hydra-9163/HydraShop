@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
@@ -18,7 +18,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-    
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // O projeto possui uma tela de login própria; as rotas padrão do Identity
+    // (Account/Login e Account/AccessDenied) não existem nesta aplicação.
+    options.LoginPath = "/Operator/Login";
+    options.AccessDeniedPath = "/Home/Index";
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    // Permite validar chamadas fetch autenticadas sem abrir mão de CSRF.
+    options.HeaderName = "RequestVerificationToken";
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

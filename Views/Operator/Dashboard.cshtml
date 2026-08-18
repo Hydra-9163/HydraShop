@@ -4,6 +4,8 @@
     ViewData["Title"] = "Dashboard";
 }
 
+@Html.AntiForgeryToken()
+
     <div class="container-fluid">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -24,17 +26,6 @@
                     + Novo Projeto
                 </a>
 
-                <form asp-controller="Operator"
-                    asp-action="Logout"
-                    method="post">
-
-                    <button type="submit"
-                            class="btn btn-danger">
-                        Sair
-                    </button>
-
-                </form>
-
             </div>
 
     </div>
@@ -51,7 +42,7 @@
 
                 <span>Recebidos</span>
 
-                <span class="badge bg-secondary">
+                <span class="badge bg-secondary column-count">
                     @Model.Recebidos.Count
                 </span>
 
@@ -74,7 +65,7 @@
 
                 <span>Em análise</span>
 
-                <span class="badge bg-warning">
+                <span class="badge bg-warning column-count">
                     @Model.EmAnalise.Count
                 </span>
 
@@ -97,7 +88,7 @@
 
                 <span>Em fila</span>
 
-                <span class="badge bg-info">
+                <span class="badge bg-info column-count">
                     @Model.EmFila.Count
                 </span>
 
@@ -120,7 +111,7 @@
 
                 <span>Aguardando material</span>
 
-                <span class="badge bg-warning">
+                <span class="badge bg-warning column-count">
                     @Model.AguardandoMaterial.Count
                 </span>
 
@@ -143,7 +134,7 @@
 
                 <span>Em produção</span>
 
-                <span class="badge bg-primary">
+                <span class="badge bg-primary column-count">
                     @Model.EmProducao.Count
                 </span>
 
@@ -166,7 +157,7 @@
 
                 <span>Pausados</span>
 
-                <span class="badge bg-danger">
+                <span class="badge bg-danger column-count">
                     @Model.Pausados.Count
                 </span>
 
@@ -189,7 +180,7 @@
 
                 <span>Pronto para entrega</span>
 
-                <span class="badge bg-success">
+                <span class="badge bg-success column-count">
                     @Model.Prontos.Count
                 </span>
 
@@ -212,7 +203,7 @@
 
                 <span>Entregues</span>
 
-                <span class="badge bg-success">
+                <span class="badge bg-success column-count">
                     @Model.Entregues.Count
                 </span>
 
@@ -235,7 +226,7 @@
 
                 <span>Cancelados</span>
 
-                <span class="badge bg-danger">
+                <span class="badge bg-danger column-count">
                     @Model.Cancelados.Count
                 </span>
 

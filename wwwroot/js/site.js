@@ -133,7 +133,8 @@
                         method: "POST",
 
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ""
                         },
 
                         body: JSON.stringify({
@@ -190,7 +191,12 @@
                 );
 
 
-                // Move o card
+                if (!data.success) {
+                    alert(data.message ?? "Não foi possível atualizar o status.");
+                    return;
+                }
+
+                // Move o card somente depois de o banco confirmar a alteração.
                 column.appendChild(cardToMove);
 
 
