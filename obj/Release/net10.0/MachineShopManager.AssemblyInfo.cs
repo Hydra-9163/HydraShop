@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MachineShopManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f846e241d6fc2ae3c854839eacde5c2ad38e1458")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a26c25b87dafa9b12821fa08d511e69f6b2d3198")]
 [assembly: System.Reflection.AssemblyProductAttribute("MachineShopManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MachineShopManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

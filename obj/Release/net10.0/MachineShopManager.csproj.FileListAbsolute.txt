@@ -186,4 +186,5 @@ C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\re
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\MachineShopManager.pdb
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\MachineShopManager.genruntimeconfig.cache
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\ref\MachineShopManager.dll
-C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\compressed\4buen9349s-{0}-02drd87eq8-02drd87eq8.gz
+C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\MachineShopManager.sourcelink.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Release\net10.0\compressed\4buen9349s-{0}-1m410r30i4-1m410r30i4.gz
