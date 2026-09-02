@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MachineShopManager.Data;
 using Microsoft.EntityFrameworkCore;
+using MachineShopManager.Enums;
+using MachineShopManager.ViewModels;
 
 namespace MachineShopManager.Controllers;
 
@@ -33,7 +35,7 @@ public class StudentController : Controller
 
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult Project(string code)
+    public async Task<IActionResult> Project(string code)
     {
         // Verifica se o código foi informado
         if (string.IsNullOrWhiteSpace(code))
@@ -48,9 +50,9 @@ public class StudentController : Controller
         code = code.Trim().ToUpperInvariant();
 
         // Procura o projeto no banco
-        var project = _context.Projects
+        var project = await _context.Projects
             .Include(p => p.ServiceRequirement)
-            .FirstOrDefault(p => p.Code == code);
+            .FirstOrDefaultAsync(p => p.Code == code);
 
 
         // Projeto não encontrado
@@ -70,7 +72,29 @@ public class StudentController : Controller
 
 
         // Projeto encontrado
-        return View(project);
+        int? queuePosition = null;
+        int? queueTotal = null;
+
+        if (project.Status == ProjectStatus.EmFila)
+        {
+            var queue = _context.Projects
+                .AsNoTracking()
+                .Where(item => !item.Archived && item.Status == ProjectStatus.EmFila);
+
+            // CreatedAt is the existing queue-order source; Id breaks ties deterministically.
+            // A project returning to the queue keeps this original-request ordering.
+            queueTotal = await queue.CountAsync();
+            queuePosition = await queue.CountAsync(item =>
+                item.CreatedAt < project.CreatedAt ||
+                (item.CreatedAt == project.CreatedAt && item.Id < project.Id)) + 1;
+        }
+
+        return View(new StudentProjectViewModel
+        {
+            Project = project,
+            QueuePosition = queuePosition,
+            QueueTotal = queueTotal
+        });
     }
 
     private IActionResult RedirectToHomeWithStudentError(string message)

@@ -66,7 +66,7 @@ public class ProjectController : Controller
         if (!ModelState.IsValid)
             return View(input);
 
-        project.Status = ProjectStatus.Recebido;
+        project.Status = ProjectStatus.EmFila;
         project.CreatedAt = DateTime.UtcNow;
 
         project.DesiredDelivery = DateTime.SpecifyKind(
@@ -84,8 +84,8 @@ public class ProjectController : Controller
 
         AddHistory(
             project,
-            ProjectStatus.Recebido,
-            ProjectStatus.Recebido,
+            ProjectStatus.EmFila,
+            ProjectStatus.EmFila,
             "Projeto criado.");
 
         _context.SaveChanges();
@@ -671,10 +671,7 @@ public class ProjectController : Controller
     {
         return status switch
         {
-            ProjectStatus.Recebido => "Recebido",
-            ProjectStatus.EmAnalise => "Em análise",
             ProjectStatus.EmFila => "Em fila",
-            ProjectStatus.AguardandoMaterial => "Aguardando material",
             ProjectStatus.EmProducao => "Em produção",
             ProjectStatus.Pausado => "Pausado",
             ProjectStatus.ProntoParaEntrega => "Pronto para entrega",

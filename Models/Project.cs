@@ -30,7 +30,7 @@ public class Project
     [Display(Name = "Tipo de Serviço")]
     public ServiceType ServiceType { get; set; }
 
-    public ProjectStatus Status { get; set; } = ProjectStatus.Recebido;
+    public ProjectStatus Status { get; set; } = ProjectStatus.EmFila;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

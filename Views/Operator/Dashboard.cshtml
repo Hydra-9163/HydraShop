@@ -11,7 +11,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
-                <h1>Machine Shop</h1>
+                <h1>Hydra Shop</h1>
 
                 <p class="text-secondary mb-0">
                     Gerenciamento de projetos
@@ -31,53 +31,6 @@
     </div>
 
     <div class="kanban-board">
-
-
-        <!-- RECEBIDOS -->
-
-        <div class="kanban-column"
-            data-status="Recebido">
-
-            <div class="kanban-header">
-
-                <span>Recebidos</span>
-
-                <span class="badge bg-secondary column-count">
-                    @Model.Recebidos.Count
-                </span>
-
-            </div>
-
-            @foreach (var project in Model.Recebidos)
-            {
-                <partial name="_ProjectCard" model="project" />
-            }
-
-        </div>
-
-
-        <!-- EM ANÁLISE -->
-
-        <div class="kanban-column"
-            data-status="EmAnalise">
-
-            <div class="kanban-header">
-
-                <span>Em análise</span>
-
-                <span class="badge bg-warning column-count">
-                    @Model.EmAnalise.Count
-                </span>
-
-            </div>
-
-            @foreach (var project in Model.EmAnalise)
-            {
-                <partial name="_ProjectCard" model="project" />
-            }
-
-        </div>
-
 
         <!-- EM FILA -->
 
@@ -100,30 +53,6 @@
             }
 
         </div>
-
-
-        <!-- AGUARDANDO MATERIAL -->
-
-        <div class="kanban-column"
-            data-status="AguardandoMaterial">
-
-            <div class="kanban-header">
-
-                <span>Aguardando material</span>
-
-                <span class="badge bg-warning column-count">
-                    @Model.AguardandoMaterial.Count
-                </span>
-
-            </div>
-
-            @foreach (var project in Model.AguardandoMaterial)
-            {
-                <partial name="_ProjectCard" model="project" />
-            }
-
-        </div>
-
 
         <!-- PRODUÇÃO -->
 

@@ -103,20 +103,10 @@ public class OperatorController : Controller
     {
         var vm = new OperatorDashboardViewModel();
 
-        vm.Recebidos = _context.Projects
-            .Where(p => !p.Archived && p.Status == ProjectStatus.Recebido)
-            .ToList();
-
-        vm.EmAnalise = _context.Projects
-            .Where(p => !p.Archived && p.Status == ProjectStatus.EmAnalise)
-            .ToList();
-
         vm.EmFila = _context.Projects
             .Where(p => !p.Archived && p.Status == ProjectStatus.EmFila)
-            .ToList();
-
-        vm.AguardandoMaterial = _context.Projects
-            .Where(p => !p.Archived && p.Status == ProjectStatus.AguardandoMaterial)
+            .OrderBy(p => p.CreatedAt)
+            .ThenBy(p => p.Id)
             .ToList();
 
         vm.EmProducao = _context.Projects
@@ -446,10 +436,7 @@ public class OperatorController : Controller
     {
         return status switch
         {
-            ProjectStatus.Recebido => "Recebido",
-            ProjectStatus.EmAnalise => "Em análise",
             ProjectStatus.EmFila => "Em fila",
-            ProjectStatus.AguardandoMaterial => "Aguardando material",
             ProjectStatus.EmProducao => "Em produção",
             ProjectStatus.Pausado => "Pausado",
             ProjectStatus.ProntoParaEntrega => "Pronto para entrega",
