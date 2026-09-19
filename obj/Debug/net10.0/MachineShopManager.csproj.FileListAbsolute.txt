@@ -111,7 +111,6 @@ C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\rjsm
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\scopedcss\bundle\MachineShopManager.styles.css
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\scopedcss\projectbundle\MachineShopManager.bundle.scp.css
-C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\xd9ipc1pcp-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\f3jji0l6iy-{0}-bqjiyaj88i-bqjiyaj88i.gz
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\s5pz9ac0ly-{0}-c2jlpeoesf-c2jlpeoesf.gz
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\ajcb63yfy5-{0}-erw9l3u2r3-erw9l3u2r3.gz
@@ -187,3 +186,12 @@ C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\ref\
 C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\dm0f4678o8-{0}-4i35dzflwt-4i35dzflwt.gz
 C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\4buen9349s-{0}-1m410r30i4-1m410r30i4.gz
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\NuGet.Config
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\out\web.config
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\out\appsettings.Development.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\out\appsettings.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\out\MachineShopManager.deps.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\out\MachineShopManager.runtimeconfig.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\bin\Debug\net10.0\out\MachineShopManager.staticwebassets.endpoints.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\MachineShopManager.sourcelink.json
+C:\Users\fvito\Downloads\Programação\MachineShopManager\obj\Debug\net10.0\compressed\xd9ipc1pcp-{0}-v8pfkh7kmi-v8pfkh7kmi.gz

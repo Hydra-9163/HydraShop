@@ -2222,6 +2222,7 @@
       "outputPath": "C:\\Users\\fvito\\Downloads\\Programação\\MachineShopManager\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
+        "C:\\Users\\fvito\\Downloads\\Programação\\MachineShopManager\\NuGet.Config",
         "C:\\Users\\fvito\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [

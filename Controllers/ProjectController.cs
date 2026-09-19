@@ -596,12 +596,12 @@ public class ProjectController : Controller
         {
             case ServiceType.Impressao3D:
                 RequiredFile(requirement.ThreeDFile, "Requirements.ThreeDFile", "Arquivo 3D", new[] { ".stl", ".step", ".obj" });
-                Required(requirement.PrintMaterial, "Requirements.PrintMaterial", "Material"); Required(requirement.FilamentColor, "Requirements.FilamentColor", "Cor do filamento/resina"); break;
+                Required(requirement.PrintMaterial, "Requirements.PrintMaterial", "Material"); Required(requirement.FilamentColor, "Requirements.FilamentColor", "Cor do filamento"); break;
             case ServiceType.UsinagemCNC:
                 RequiredFile(requirement.CncModelFile, "Requirements.CncModelFile", "Modelo 3D", new[] { ".step", ".iges", ".igs" });
                 Required(requirement.MaterialSpecification, "Requirements.MaterialSpecification", "Material");
                 if (requirement.Quantity is null or < 1) ModelState.AddModelError("Requirements.Quantity", "Informe uma quantidade inteira maior que zero.");
-                ValidateFile(requirement.TechnicalDrawing, new[] { ".pdf" }, "Requirements.TechnicalDrawing"); break;
+                RequiredFile(requirement.TechnicalDrawing, "Requirements.TechnicalDrawing", "Desenho técnico 2D", new[] { ".pdf" }); break;
             case ServiceType.Furacao:
                 RequiredFile(requirement.HolePositionFile, "Requirements.HolePositionFile", "Posição das furações", new[] { ".pdf", ".stl", ".step", ".obj" });
                 Required(requirement.HoleDiameter, "Requirements.HoleDiameter", "Diâmetro do furo"); Required(requirement.HoleDepth, "Requirements.HoleDepth", "Profundidade"); break;
