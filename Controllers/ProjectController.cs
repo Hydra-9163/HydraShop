@@ -18,6 +18,12 @@ public class UpdateStatusRequest
 [Authorize(Roles = "Operator")]
 public class ProjectController : Controller
 {
+    // Limite total de arquivos por projeto: 100 MB (somando todos os campos).
+    private const long MaxTotalUploadBytes = 100L * 1024 * 1024;
+    // O limite do corpo da requisição (Kestrel/FormOptions) é configurado no Program.cs com folga de 5 MB.
+
+    private static readonly string[] Model3DExtensions = { ".stl", ".step", ".obj", ".gcode", ".zip" };
+
     private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
 
@@ -112,6 +118,7 @@ public class ProjectController : Controller
             .Include(p => p.Photos)
             .Include(p => p.History)
             .Include(p => p.ServiceRequirement)
+                .ThenInclude(r => r!.Files)
             .FirstOrDefault(p => p.Id == id);
 
         if (project == null)
@@ -128,6 +135,7 @@ public class ProjectController : Controller
     {
         var project = _context.Projects
             .Include(p => p.ServiceRequirement)
+                .ThenInclude(r => r!.Files)
             .FirstOrDefault(p => p.Id == id);
 
         if (project == null)
@@ -586,59 +594,98 @@ public class ProjectController : Controller
         {
             if (string.IsNullOrWhiteSpace(value)) ModelState.AddModelError(key, $"{label} é obrigatório.");
         }
-        void RequiredFile(IFormFile? file, string key, string label, string[] extensions)
+        void RequiredFiles(List<IFormFile>? files, string key, string label, string[] extensions)
         {
-            if (file == null || file.Length == 0) ModelState.AddModelError(key, $"{label} é obrigatório.");
-            ValidateFile(file, extensions, key);
+            if (!files.HasContent()) ModelState.AddModelError(key, $"{label} é obrigatório (envie ao menos 1 arquivo).");
+            ValidateFiles(files, extensions, key);
         }
 
         switch (serviceType)
         {
             case ServiceType.Impressao3D:
-                RequiredFile(requirement.ThreeDFile, "Requirements.ThreeDFile", "Arquivo 3D", new[] { ".stl", ".step", ".obj" });
+                RequiredFiles(requirement.ThreeDFile, "Requirements.ThreeDFile", "Arquivo 3D", Model3DExtensions);
                 Required(requirement.PrintMaterial, "Requirements.PrintMaterial", "Material"); Required(requirement.FilamentColor, "Requirements.FilamentColor", "Cor do filamento"); break;
             case ServiceType.UsinagemCNC:
-                RequiredFile(requirement.CncModelFile, "Requirements.CncModelFile", "Modelo 3D", new[] { ".step", ".iges", ".igs" });
+                RequiredFiles(requirement.CncModelFile, "Requirements.CncModelFile", "Modelo 3D", new[] { ".step", ".iges", ".igs", ".gcode", ".zip" });
                 Required(requirement.MaterialSpecification, "Requirements.MaterialSpecification", "Material");
                 if (requirement.Quantity is null or < 1) ModelState.AddModelError("Requirements.Quantity", "Informe uma quantidade inteira maior que zero.");
-                RequiredFile(requirement.TechnicalDrawing, "Requirements.TechnicalDrawing", "Desenho técnico 2D", new[] { ".pdf" }); break;
+                RequiredFiles(requirement.TechnicalDrawing, "Requirements.TechnicalDrawing", "Desenho técnico 2D", new[] { ".pdf" }); break;
             case ServiceType.Furacao:
-                RequiredFile(requirement.HolePositionFile, "Requirements.HolePositionFile", "Posição das furações", new[] { ".pdf", ".stl", ".step", ".obj" });
+                RequiredFiles(requirement.HolePositionFile, "Requirements.HolePositionFile", "Posição das furações", new[] { ".pdf", ".stl", ".step", ".obj", ".gcode", ".zip" });
                 Required(requirement.HoleDiameter, "Requirements.HoleDiameter", "Diâmetro do furo"); Required(requirement.HoleDepth, "Requirements.HoleDepth", "Profundidade"); break;
             case ServiceType.Solda:
-                RequiredFile(requirement.WeldingDrawing, "Requirements.WeldingDrawing", "Desenho/croqui da montagem", new[] { ".pdf", ".jpg", ".jpeg", ".png" });
+                RequiredFiles(requirement.WeldingDrawing, "Requirements.WeldingDrawing", "Desenho/croqui da montagem", new[] { ".pdf", ".jpg", ".jpeg", ".png" });
                 Required(requirement.BaseMaterials, "Requirements.BaseMaterials", "Materiais de base"); Required(requirement.WeldingProcess, "Requirements.WeldingProcess", "Processo de soldagem"); break;
             case ServiceType.Dobra:
-                RequiredFile(requirement.BendingDrawing, "Requirements.BendingDrawing", "Desenho 2D/planificação", new[] { ".pdf", ".step" });
+                RequiredFiles(requirement.BendingDrawing, "Requirements.BendingDrawing", "Desenho 2D/planificação", new[] { ".pdf", ".step", ".gcode", ".zip" });
                 Required(requirement.SheetMaterial, "Requirements.SheetMaterial", "Material"); Required(requirement.SheetThickness, "Requirements.SheetThickness", "Espessura"); Required(requirement.BendAngles, "Requirements.BendAngles", "Ângulo(s) de dobra"); Required(requirement.InnerRadius, "Requirements.InnerRadius", "Raio interno"); break;
             case ServiceType.Outro:
-                RequiredFile(requirement.ReferenceFile, "Requirements.ReferenceFile", "Croqui, foto ou arquivo base", new[] { ".pdf", ".jpg", ".jpeg", ".png", ".stl", ".step", ".obj" });
+                RequiredFiles(requirement.ReferenceFile, "Requirements.ReferenceFile", "Croqui, foto ou arquivo base", new[] { ".pdf", ".jpg", ".jpeg", ".png", ".stl", ".step", ".obj", ".gcode", ".zip" });
                 Required(requirement.CustomDescription, "Requirements.CustomDescription", "Descrição detalhada"); Required(requirement.MaximumDimensions, "Requirements.MaximumDimensions", "Dimensões brutas máximas"); break;
         }
+
+        // Limite de 100 MB somando todos os arquivos do projeto (não por arquivo).
+        var totalBytes = ActiveFiles(serviceType, requirement).Sum(f => f.Length);
+        if (totalBytes > MaxTotalUploadBytes)
+            ModelState.AddModelError(string.Empty,
+                $"Os arquivos somam {totalBytes / 1024d / 1024d:0.#} MB. O total não pode passar de 100 MB.");
     }
 
-    private void ValidateFile(IFormFile? file, string[] extensions, string key)
+    private void ValidateFiles(List<IFormFile>? files, string[] extensions, string key)
     {
-        if (file == null || file.Length == 0) return;
-        if (file.Length > 10 * 1024 * 1024)
-            ModelState.AddModelError(key, "O arquivo não pode exceder 10 MB.");
-        else if (!extensions.Contains(Path.GetExtension(file.FileName).ToLowerInvariant()))
-            ModelState.AddModelError(key, $"Formato inválido. Permitidos: {string.Join(", ", extensions)}.");
+        if (!files.HasContent()) return;
+        var invalid = files!
+            .Where(f => f.Length > 0 && !extensions.Contains(Path.GetExtension(f.FileName).ToLowerInvariant()))
+            .Select(f => f.FileName)
+            .ToList();
+        if (invalid.Count > 0)
+            ModelState.AddModelError(key, $"Formato inválido em: {string.Join(", ", invalid)}. Permitidos: {string.Join(", ", extensions)}.");
+    }
+
+    /// <summary>Todos os arquivos enviados que pertencem ao tipo de serviço escolhido.</summary>
+    private static IEnumerable<IFormFile> ActiveFiles(ServiceType serviceType, ServiceRequirementInputModel input)
+    {
+        var lists = serviceType switch
+        {
+            ServiceType.Impressao3D => new[] { input.ThreeDFile },
+            ServiceType.UsinagemCNC => new[] { input.CncModelFile, input.TechnicalDrawing },
+            ServiceType.Furacao => new[] { input.HolePositionFile },
+            ServiceType.Solda => new[] { input.WeldingDrawing },
+            ServiceType.Dobra => new[] { input.BendingDrawing },
+            ServiceType.Outro => new[] { input.ReferenceFile },
+            _ => Array.Empty<List<IFormFile>?>()
+        };
+        return lists.Where(l => l != null).SelectMany(l => l!).Where(f => f.Length > 0);
     }
 
     private ProjectServiceRequirement CreateRequirement(Project project, ServiceRequirementInputModel input)
     {
         var requirement = new ProjectServiceRequirement { ProjectId = project.Id, ServiceType = project.ServiceType };
-        void File(IFormFile? file, Action<string, string> set) { if (file is { Length: > 0 }) { var saved = SaveRequirementFile(project.Id, file); set(saved.name, saved.path); } }
+        void Files(List<IFormFile>? files, string field)
+        {
+            foreach (var file in files ?? new List<IFormFile>())
+            {
+                if (file.Length == 0) continue;
+                var saved = SaveRequirementFile(project.Id, file);
+                requirement.Files.Add(new ProjectRequirementFile
+                {
+                    Field = field,
+                    FileName = saved.name,
+                    FilePath = saved.path,
+                    SizeBytes = file.Length,
+                    UploadedAt = DateTime.UtcNow
+                });
+            }
+        }
         string? Text(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         switch (project.ServiceType)
         {
-            case ServiceType.Impressao3D: File(input.ThreeDFile, (n,p) => { requirement.ThreeDFileName=n; requirement.ThreeDFilePath=p; }); requirement.PrintMaterial=Text(input.PrintMaterial); requirement.FilamentColor=Text(input.FilamentColor); requirement.Infill=Text(input.Infill); requirement.PreferredOrientation=Text(input.PreferredOrientation); requirement.PostProcessing=Text(input.PostProcessing); break;
-            case ServiceType.UsinagemCNC: File(input.CncModelFile, (n,p) => { requirement.CncModelFileName=n; requirement.CncModelFilePath=p; }); File(input.TechnicalDrawing, (n,p) => { requirement.TechnicalDrawingFileName=n; requirement.TechnicalDrawingFilePath=p; }); requirement.MaterialSpecification=Text(input.MaterialSpecification); requirement.Quantity=input.Quantity; requirement.SurfaceRoughness=Text(input.SurfaceRoughness); requirement.PostTreatment=Text(input.PostTreatment); break;
-            case ServiceType.Furacao: File(input.HolePositionFile, (n,p) => { requirement.HolePositionFileName=n; requirement.HolePositionFilePath=p; }); requirement.HoleDiameter=Text(input.HoleDiameter); requirement.HoleDepth=Text(input.HoleDepth); requirement.ThreadOrRecess=Text(input.ThreadOrRecess); requirement.HoleTolerance=Text(input.HoleTolerance); break;
-            case ServiceType.Solda: File(input.WeldingDrawing, (n,p) => { requirement.WeldingDrawingFileName=n; requirement.WeldingDrawingFilePath=p; }); requirement.BaseMaterials=Text(input.BaseMaterials); requirement.WeldingProcess=Text(input.WeldingProcess); requirement.WeldFinish=Text(input.WeldFinish); requirement.InspectionRequirement=Text(input.InspectionRequirement); break;
-            case ServiceType.Dobra: File(input.BendingDrawing, (n,p) => { requirement.BendingDrawingFileName=n; requirement.BendingDrawingFilePath=p; }); requirement.SheetMaterial=Text(input.SheetMaterial); requirement.SheetThickness=Text(input.SheetThickness); requirement.BendAngles=Text(input.BendAngles); requirement.InnerRadius=Text(input.InnerRadius); requirement.GrainDirection=Text(input.GrainDirection); requirement.VisualToleranceSide=Text(input.VisualToleranceSide); break;
-            case ServiceType.Outro: File(input.ReferenceFile, (n,p) => { requirement.ReferenceFileName=n; requirement.ReferenceFilePath=p; }); requirement.CustomDescription=Text(input.CustomDescription); requirement.MaximumDimensions=Text(input.MaximumDimensions); requirement.FinalApplication=Text(input.FinalApplication); break;
+            case ServiceType.Impressao3D: Files(input.ThreeDFile, nameof(input.ThreeDFile)); requirement.PrintMaterial=Text(input.PrintMaterial); requirement.FilamentColor=Text(input.FilamentColor); requirement.Infill=Text(input.Infill); requirement.PreferredOrientation=Text(input.PreferredOrientation); requirement.PostProcessing=Text(input.PostProcessing); break;
+            case ServiceType.UsinagemCNC: Files(input.CncModelFile, nameof(input.CncModelFile)); Files(input.TechnicalDrawing, nameof(input.TechnicalDrawing)); requirement.MaterialSpecification=Text(input.MaterialSpecification); requirement.Quantity=input.Quantity; requirement.SurfaceRoughness=Text(input.SurfaceRoughness); requirement.PostTreatment=Text(input.PostTreatment); break;
+            case ServiceType.Furacao: Files(input.HolePositionFile, nameof(input.HolePositionFile)); requirement.HoleDiameter=Text(input.HoleDiameter); requirement.HoleDepth=Text(input.HoleDepth); requirement.ThreadOrRecess=Text(input.ThreadOrRecess); requirement.HoleTolerance=Text(input.HoleTolerance); break;
+            case ServiceType.Solda: Files(input.WeldingDrawing, nameof(input.WeldingDrawing)); requirement.BaseMaterials=Text(input.BaseMaterials); requirement.WeldingProcess=Text(input.WeldingProcess); requirement.WeldFinish=Text(input.WeldFinish); requirement.InspectionRequirement=Text(input.InspectionRequirement); break;
+            case ServiceType.Dobra: Files(input.BendingDrawing, nameof(input.BendingDrawing)); requirement.SheetMaterial=Text(input.SheetMaterial); requirement.SheetThickness=Text(input.SheetThickness); requirement.BendAngles=Text(input.BendAngles); requirement.InnerRadius=Text(input.InnerRadius); requirement.GrainDirection=Text(input.GrainDirection); requirement.VisualToleranceSide=Text(input.VisualToleranceSide); break;
+            case ServiceType.Outro: Files(input.ReferenceFile, nameof(input.ReferenceFile)); requirement.CustomDescription=Text(input.CustomDescription); requirement.MaximumDimensions=Text(input.MaximumDimensions); requirement.FinalApplication=Text(input.FinalApplication); break;
         }
         return requirement;
     }
@@ -650,7 +697,7 @@ public class ProjectController : Controller
         var storedName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName).ToLowerInvariant()}";
         using var stream = new FileStream(Path.Combine(folder, storedName), FileMode.Create);
         file.CopyTo(stream);
-        return (file.FileName, $"/uploads/projects/{projectId}/requirements/{storedName}");
+        return (Path.GetFileName(file.FileName), $"/uploads/projects/{projectId}/requirements/{storedName}");
     }
 
     private void AddHistory(Project project, ProjectStatus previousStatus, ProjectStatus newStatus, string description)
@@ -680,4 +727,10 @@ public class ProjectController : Controller
             _ => "Desconhecido"
         };
     }
+}
+
+internal static class FormFileListExtensions
+{
+    /// <summary>True quando a lista existe e tem pelo menos um arquivo não vazio.</summary>
+    public static bool HasContent(this List<IFormFile>? files) => files != null && files.Any(f => f.Length > 0);
 }

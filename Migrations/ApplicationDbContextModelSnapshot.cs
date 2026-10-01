@@ -204,6 +204,42 @@ namespace MachineShopManager.Migrations
                     b.ToTable("ProjectPhotos");
                 });
 
+            modelBuilder.Entity("MachineShopManager.Models.ProjectRequirementFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Field")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProjectServiceRequirementId")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectServiceRequirementId");
+
+                    b.ToTable("ProjectRequirementFiles");
+                });
+
             modelBuilder.Entity("MachineShopManager.Models.ProjectServiceRequirement", b =>
                 {
                     b.Property<int>("Id")
@@ -499,6 +535,17 @@ namespace MachineShopManager.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("MachineShopManager.Models.ProjectRequirementFile", b =>
+                {
+                    b.HasOne("MachineShopManager.Models.ProjectServiceRequirement", "ServiceRequirement")
+                        .WithMany("Files")
+                        .HasForeignKey("ProjectServiceRequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceRequirement");
+                });
+
             modelBuilder.Entity("MachineShopManager.Models.ProjectServiceRequirement", b =>
                 {
                     b.HasOne("MachineShopManager.Models.Project", "Project")
@@ -568,6 +615,11 @@ namespace MachineShopManager.Migrations
                     b.Navigation("Photos");
 
                     b.Navigation("ServiceRequirement");
+                });
+
+            modelBuilder.Entity("MachineShopManager.Models.ProjectServiceRequirement", b =>
+                {
+                    b.Navigation("Files");
                 });
 #pragma warning restore 612, 618
         }

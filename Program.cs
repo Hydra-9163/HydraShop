@@ -2,8 +2,20 @@ using Microsoft.EntityFrameworkCore;
 using MachineShopManager.Data;
 using Microsoft.AspNetCore.Identity;
 using MachineShopManager.Models;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Uploads de até 100 MB por projeto (soma de todos os arquivos) + 5 MB de folga para os campos do formulário.
+// Fica aqui (e não por atributo) porque o antiforgery lê o formulário antes dos atributos de limite.
+const long maxRequestBodyBytes = 105L * 1024 * 1024;
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = maxRequestBodyBytes);
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = maxRequestBodyBytes;
+    options.ValueCountLimit = int.MaxValue; // sem limite de quantidade de arquivos
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -47,6 +59,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Arquivos enviados em tempo de execução (wwwroot/uploads) precisam do UseStaticFiles; o MapStaticAssets
+// só conhece o que existia no build. Extensões de CAD/G-code não têm MIME padrão, então senão dariam 404.
+var contentTypes = new FileExtensionContentTypeProvider();
+foreach (var ext in new[] { ".stl", ".obj", ".step", ".stp", ".iges", ".igs", ".gcode" })
+    contentTypes.Mappings[ext] = "application/octet-stream";
+app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypes });
+
 app.UseRouting();
 
 app.UseAuthentication();

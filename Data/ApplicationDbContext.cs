@@ -19,6 +19,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<ProjectServiceRequirement> ProjectServiceRequirements => Set<ProjectServiceRequirement>();
 
+    public DbSet<ProjectRequirementFile> ProjectRequirementFiles => Set<ProjectRequirementFile>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

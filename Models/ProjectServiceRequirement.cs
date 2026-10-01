@@ -50,4 +50,7 @@ public class ProjectServiceRequirement
     public string? ReferenceFilePath { get; set; }
     public string? MaximumDimensions { get; set; }
     public string? FinalApplication { get; set; }
+
+    /// <summary>Arquivos enviados (vários por campo). Projetos antigos usam as colunas *FileName/*FilePath acima.</summary>
+    public ICollection<ProjectRequirementFile> Files { get; set; } = new List<ProjectRequirementFile>();
 }

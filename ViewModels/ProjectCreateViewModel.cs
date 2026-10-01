@@ -10,29 +10,29 @@ public sealed class ProjectCreateViewModel
 
 public sealed class ServiceRequirementInputModel
 {
-    public IFormFile? ThreeDFile { get; set; }
+    public List<IFormFile>? ThreeDFile { get; set; }
     public string? PrintMaterial { get; set; }
     public string? FilamentColor { get; set; }
     public string? Infill { get; set; }
     public string? PreferredOrientation { get; set; }
     public string? PostProcessing { get; set; }
-    public IFormFile? CncModelFile { get; set; }
+    public List<IFormFile>? CncModelFile { get; set; }
     public string? MaterialSpecification { get; set; }
     public int? Quantity { get; set; }
-    public IFormFile? TechnicalDrawing { get; set; }
+    public List<IFormFile>? TechnicalDrawing { get; set; }
     public string? SurfaceRoughness { get; set; }
     public string? PostTreatment { get; set; }
-    public IFormFile? HolePositionFile { get; set; }
+    public List<IFormFile>? HolePositionFile { get; set; }
     public string? HoleDiameter { get; set; }
     public string? HoleDepth { get; set; }
     public string? ThreadOrRecess { get; set; }
     public string? HoleTolerance { get; set; }
-    public IFormFile? WeldingDrawing { get; set; }
+    public List<IFormFile>? WeldingDrawing { get; set; }
     public string? BaseMaterials { get; set; }
     public string? WeldingProcess { get; set; }
     public string? WeldFinish { get; set; }
     public string? InspectionRequirement { get; set; }
-    public IFormFile? BendingDrawing { get; set; }
+    public List<IFormFile>? BendingDrawing { get; set; }
     public string? SheetMaterial { get; set; }
     public string? SheetThickness { get; set; }
     public string? BendAngles { get; set; }
@@ -40,7 +40,7 @@ public sealed class ServiceRequirementInputModel
     public string? GrainDirection { get; set; }
     public string? VisualToleranceSide { get; set; }
     public string? CustomDescription { get; set; }
-    public IFormFile? ReferenceFile { get; set; }
+    public List<IFormFile>? ReferenceFile { get; set; }
     public string? MaximumDimensions { get; set; }
     public string? FinalApplication { get; set; }
 }

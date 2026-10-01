@@ -1,10 +1,34 @@
 @model MachineShopManager.Models.ProjectServiceRequirement
 @using MachineShopManager.Enums
+@functions {
+    static string Size(long bytes) => bytes >= 1048576 ? $"{bytes / 1048576d:0.#} MB" : $"{Math.Max(1, bytes / 1024d):0.#} KB";
+}
+@{
+    // Mostra todos os arquivos enviados para o campo (projetos novos); projetos antigos usam o link único legado.
+    Microsoft.AspNetCore.Html.IHtmlContent FileList(string field, string? legacyPath, string? legacyName)
+    {
+        var files = Model.Files.Where(f => f.Field == field).OrderBy(f => f.Id).ToList();
+        var builder = new Microsoft.AspNetCore.Html.HtmlContentBuilder();
+        if (files.Count == 0 && !string.IsNullOrEmpty(legacyPath))
+        {
+            builder.AppendHtml("<a href=\"").Append(legacyPath).AppendHtml("\">").Append(legacyName ?? legacyPath).AppendHtml("</a>");
+            return builder;
+        }
+        builder.AppendHtml("<ul class=\"mb-0\">");
+        foreach (var f in files)
+        {
+            builder.AppendHtml("<li><a href=\"").Append(f.FilePath).AppendHtml("\" download=\"").Append(f.FileName).AppendHtml("\">")
+                   .Append(f.FileName).AppendHtml("</a> <small class=\"text-muted\">(").Append(Size(f.SizeBytes)).AppendHtml(")</small></li>");
+        }
+        builder.AppendHtml("</ul>");
+        return builder;
+    }
+}
 <div class="card mb-4"><div class="card-header"><h4 class="mb-0">Requisitos do serviço</h4></div><div class="card-body">
-@if (Model.ServiceType == ServiceType.Impressao3D) { <p><strong>Arquivo 3D:</strong> <a href="@Model.ThreeDFilePath">@Model.ThreeDFileName</a></p><p><strong>Material:</strong> @Model.PrintMaterial</p><p><strong>Cor do filamento:</strong> @Model.FilamentColor</p><p><strong>Infill:</strong> @Model.Infill</p><p><strong>Orientação:</strong> @Model.PreferredOrientation</p><p><strong>Acabamento:</strong> @Model.PostProcessing</p> }
-@if (Model.ServiceType == ServiceType.UsinagemCNC) { <p><strong>Modelo 3D:</strong> <a href="@Model.CncModelFilePath">@Model.CncModelFileName</a></p><p><strong>Material:</strong> @Model.MaterialSpecification</p><p><strong>Quantidade:</strong> @Model.Quantity</p><p><strong>Desenho técnico 2D:</strong> <a href="@Model.TechnicalDrawingFilePath">@Model.TechnicalDrawingFileName</a></p> }
-@if (Model.ServiceType == ServiceType.Furacao) { <p><strong>Diâmetro:</strong> @Model.HoleDiameter</p><p><strong>Profundidade:</strong> @Model.HoleDepth</p><p><strong>Rosca/rebaixo:</strong> @Model.ThreadOrRecess</p><p><strong>Tolerância:</strong> @Model.HoleTolerance</p> }
-@if (Model.ServiceType == ServiceType.Solda) { <p><strong>Materiais de base:</strong> @Model.BaseMaterials</p><p><strong>Processo:</strong> @Model.WeldingProcess</p> }
-@if (Model.ServiceType == ServiceType.Dobra) { <p><strong>Material:</strong> @Model.SheetMaterial</p><p><strong>Espessura:</strong> @Model.SheetThickness</p><p><strong>Ângulos:</strong> @Model.BendAngles</p><p><strong>Raio interno:</strong> @Model.InnerRadius</p> }
-@if (Model.ServiceType == ServiceType.Outro) { <p><strong>Descrição:</strong> @Model.CustomDescription</p><p><strong>Dimensões máximas:</strong> @Model.MaximumDimensions</p> }
+@if (Model.ServiceType == ServiceType.Impressao3D) { <div class="mb-2"><strong>Arquivo(s) 3D:</strong> @FileList("ThreeDFile", Model.ThreeDFilePath, Model.ThreeDFileName)</div><p><strong>Material:</strong> @Model.PrintMaterial</p><p><strong>Cor do filamento:</strong> @Model.FilamentColor</p><p><strong>Infill:</strong> @Model.Infill</p><p><strong>Orientação:</strong> @Model.PreferredOrientation</p><p><strong>Acabamento:</strong> @Model.PostProcessing</p> }
+@if (Model.ServiceType == ServiceType.UsinagemCNC) { <div class="mb-2"><strong>Modelo(s) 3D:</strong> @FileList("CncModelFile", Model.CncModelFilePath, Model.CncModelFileName)</div><p><strong>Material:</strong> @Model.MaterialSpecification</p><p><strong>Quantidade:</strong> @Model.Quantity</p><div class="mb-2"><strong>Desenho(s) técnico(s) 2D:</strong> @FileList("TechnicalDrawing", Model.TechnicalDrawingFilePath, Model.TechnicalDrawingFileName)</div> }
+@if (Model.ServiceType == ServiceType.Furacao) { <div class="mb-2"><strong>Posição das furações:</strong> @FileList("HolePositionFile", Model.HolePositionFilePath, Model.HolePositionFileName)</div><p><strong>Diâmetro:</strong> @Model.HoleDiameter</p><p><strong>Profundidade:</strong> @Model.HoleDepth</p><p><strong>Rosca/rebaixo:</strong> @Model.ThreadOrRecess</p><p><strong>Tolerância:</strong> @Model.HoleTolerance</p> }
+@if (Model.ServiceType == ServiceType.Solda) { <div class="mb-2"><strong>Desenho/croqui:</strong> @FileList("WeldingDrawing", Model.WeldingDrawingFilePath, Model.WeldingDrawingFileName)</div><p><strong>Materiais de base:</strong> @Model.BaseMaterials</p><p><strong>Processo:</strong> @Model.WeldingProcess</p> }
+@if (Model.ServiceType == ServiceType.Dobra) { <div class="mb-2"><strong>Desenho 2D/planificação:</strong> @FileList("BendingDrawing", Model.BendingDrawingFilePath, Model.BendingDrawingFileName)</div><p><strong>Material:</strong> @Model.SheetMaterial</p><p><strong>Espessura:</strong> @Model.SheetThickness</p><p><strong>Ângulos:</strong> @Model.BendAngles</p><p><strong>Raio interno:</strong> @Model.InnerRadius</p> }
+@if (Model.ServiceType == ServiceType.Outro) { <div class="mb-2"><strong>Croqui/foto/arquivo base:</strong> @FileList("ReferenceFile", Model.ReferenceFilePath, Model.ReferenceFileName)</div><p><strong>Descrição:</strong> @Model.CustomDescription</p><p><strong>Dimensões máximas:</strong> @Model.MaximumDimensions</p> }
 </div></div>

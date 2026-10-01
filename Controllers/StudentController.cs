@@ -52,6 +52,7 @@ public class StudentController : Controller
         // Procura o projeto no banco
         var project = await _context.Projects
             .Include(p => p.ServiceRequirement)
+                .ThenInclude(r => r!.Files)
             .FirstOrDefaultAsync(p => p.Code == code);
 
 
